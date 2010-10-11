@@ -1,5 +1,3 @@
-<h3><?php echo lang('polls.list_label'); ?></h3>
-
 <?php echo form_open('admin/polls/delete');?>
 
 <?php if (!empty($polls)): ?>

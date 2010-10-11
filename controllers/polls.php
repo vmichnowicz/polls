@@ -99,15 +99,18 @@ class Polls extends Public_Controller {
 			
 			
 			// Calculate percentages for each poll option
-			foreach ($data['poll']['options'] as &$option)
+			if ( ! empty($data['poll']['options']))
 			{
-				if ($option['votes'] > 0)
+				foreach ($data['poll']['options'] as &$option)
 				{
-					$option['percent'] = round($option['votes'] / $data['poll']['total_votes'] * 100, 1);
-				}
-				else
-				{
-					$option['percent'] = 0;
+					if ($option['votes'] > 0)
+					{
+						$option['percent'] = round($option['votes'] / $data['poll']['total_votes'] * 100, 1);
+					}
+					else
+					{
+						$option['percent'] = 0;
+					}
 				}
 			}
 		
