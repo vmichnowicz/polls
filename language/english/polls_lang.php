@@ -21,7 +21,7 @@ $lang['polls.exists_error']				= 'The specified poll does not exist.';
 $lang['polls.update_error']				= 'The poll could not be updated.';
 $lang['polls.id_error']					= 'No IDs have been specified.';
 $lang['polls.no_poll_options_error']		= 'No options exist for this poll';
-$lang['polls.no_polls_error'] 			= 'No polls have been created yet, fool.';
+$lang['polls.no_polls_error'] 			= 'No polls have been created yet.';
 $lang['polls.install_error']				= 'The module could not be installed.';
 
 // View poll action labels
@@ -55,4 +55,3 @@ $lang['polls.no']						= 'No';
 $lang['polls.total_votes']				= 'Total votes';
 $lang['polls.results']					= 'Results';
 $lang['polls.no_options']				= 'There are no options for this poll';
-?>

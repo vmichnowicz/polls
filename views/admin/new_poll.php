@@ -1,6 +1,6 @@
 <h3><?php echo lang('polls.new_poll_label'); ?></h3>
 
-<?php echo form_open_multipart($this->uri->uri_string(), 'class="crud"'); ?>
+<?php echo form_open_multipart(uri_string(), 'class="crud"'); ?>
 	<ul>
 		<li>
 			<label for="title"><?php echo lang('polls.title_label'); ?></label>
@@ -21,7 +21,9 @@
 
 		<li class="even">
 			<label for="options"><?php echo lang('polls.options_label'); ?></label>
-			<ol id="options">
+
+			<div style="float:left">
+			<ul id="options">
 				<?php if ( isset($poll['options']) ): ?>
 					<?php foreach($poll['options'] as $option): ?>
 						<?php if ($option !== ''): ?>
@@ -32,7 +34,8 @@
 					<li><input type="text" name="options[]" /></li>
 				<?php endif; ?>
 				<li><input type="text" name="options[]" /></li>
-			</ol>
+			</ul>
+			</div>
 		</li>
 
 		<li class="odd">
