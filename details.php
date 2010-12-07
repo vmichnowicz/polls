@@ -2,7 +2,7 @@
 
 class Module_Polls extends Module {
 
-	public $version = '0.3';
+	public $version = '0.4';
 
 	public function info()
 	{
