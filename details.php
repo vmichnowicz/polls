@@ -1,8 +1,8 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
-class Details_Polls extends Module {
+class Module_Polls extends Module {
 
-	public $version = '0.3';
+	public $version = '0.4';
 
 	public function info()
 	{

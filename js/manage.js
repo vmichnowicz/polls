@@ -15,11 +15,10 @@ jQuery(document).ready(function($) {
 		// Focus in
 		if (e.type == 'focusin')
 		{
-		
-			if (!val && blank_inupts < 2)
+			if ( ! val && blank_inupts < 2)
 			{
-				$(this).clone().appendTo('#options');
-				console.log(blank_inupts);
+				$(this).clone().appendTo('#options').wrap('<li />');
+				
 			}
 		}
 		
