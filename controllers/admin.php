@@ -50,6 +50,11 @@ class Admin extends Admin_Controller {
 				'rules' => 'trim|max_length[64]|required|alpha_dash'
 			),
 			array(
+				'field' => 'type',
+				'label' => 'lang:polls.type_label',
+				'rules' => 'trim'
+			),
+			array(
 				'field' => 'description',
 				'label' => 'Description',
 				'rules' => 'trim'
@@ -111,8 +116,6 @@ class Admin extends Admin_Controller {
 			{
 				// Add the poll options to our array
 				$poll['options'] = $this->poll_options_m->get_all_where_poll_id($poll['id']);
-		
-			
 			}
 		}
 		// Load the view (and pass in the poll data)

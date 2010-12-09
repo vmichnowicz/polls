@@ -4,7 +4,7 @@
  *
  * Create totally awesome polls.
  *
- * @author 	Victor Michnowicz
+ * @author 		Victor Michnowicz
  * @category 	Modules
  *
  */
@@ -14,6 +14,7 @@ class Polls extends Public_Controller {
 	 * Constructor method
 	 *
 	 * @access public
+	 * 
 	 * @return void
 	 */
 	public function __construct()
@@ -33,6 +34,7 @@ class Polls extends Public_Controller {
 	 * Index method
 	 *
 	 * @access public
+	 * 
 	 * @return void
 	 */
 	public function index()
@@ -48,8 +50,11 @@ class Polls extends Public_Controller {
 	 * View a single poll
 	 *
 	 * @author Victor Michnowicz
+	 * 
 	 * @access public
-	 * @param string $slug The slug of the poll
+	 * 
+	 * @param string 			The slug of the poll
+	 * @param bool 				Force showing of results
 	 */
 	public function poll($slug = NULL, $show_results = FALSE)
 	{
@@ -60,7 +65,6 @@ class Polls extends Public_Controller {
 		// If this poll exists
 		if ($poll_id)
 		{
-		
 			// Get the data for this particular poll
 			$data['poll'] = $this->polls_m->get_poll_by_id($poll_id);
 			
@@ -68,35 +72,47 @@ class Polls extends Public_Controller {
 			$members_only = $data['poll']['members_only'];
 			$members_only_check = ( $members_only AND !$this->ion_auth->logged_in() ) ? FALSE : TRUE;
 			
-			// Has user already voted in this poll		
+			// Has user already voted in this poll?
 			$already_voted = ( $this->session->userdata('poll_' . $poll_id) ) ? TRUE : FALSE;
 			
 			// If the user decided to vote, has not alreay voted in this poll, AND this poll is not members only AND the user is not logged in
-			if ( $this->input->post('vote') AND !$already_voted AND $members_only_check )
+			if ( $this->input->post('vote') AND ! $already_voted AND $members_only_check )
 			{
-				// Get the ID of the poll option
-				$poll_option_id = $this->input->post('vote');
-					
-				// Make sure this poll option is valid
-				if ($this->poll_options_m->poll_option_exists($poll_id, $poll_option_id))
-				{
-					// Set session data so this user can not vote again
-					// Unless he circumvents our near-perfect cookie-based validation approach (insert sarcasm)
-					$this->session->set_userdata('poll_' . $poll_id, $poll_option_id);
+				// Grab all votes (or vote)
+				$votes = $this->input->post('vote');
 				
-					// Record the vote
-					$this->poll_options_m->record_vote($poll_option_id);
-					
-					// User just voted
-					$already_voted = TRUE;
+				// If user sumitted multiple votes in a poll that only allows one vote (very naugty!)
+				if (count($votes) > 1 AND $data['poll']['type'] != 'multiple')
+				{
+					show_404();
 				}
+				
+				// Go through our $votes array
+				foreach ($votes as $vote)
+				{
+					// Make sure this poll option is valid
+					if ($this->poll_options_m->poll_option_exists($poll_id, $vote['id']))
+					{
+						// Get "other" vote (if it exists)
+						$other = isset($vote['other']) ? $vote['other'] : NULL;
+						
+						// Record the vote
+						$this->poll_options_m->record_vote($vote['id'], $other);
+					}
+				}
+				
+				// Set session data so this user can not vote again
+				// ... Unless he circumvents our near-perfect cookie-based validation approach (insert sarcasm)
+//				$this->session->set_userdata('poll_' . $poll_id, $votes);
+				
+				// User just voted
+//				$already_voted = TRUE;
 			}
 			
 			// Get poll options and votes
 			$data['poll']['options'] = $this->poll_options_m->get_all_where_poll_id($poll_id);
 			$data['poll']['total_votes'] = $this->poll_options_m->get_total_votes($poll_id);
-			$data['user_vote'] = $this->session->userdata('poll_' . $poll_id);
-			
+			$data['user_vote'] = $this->session->userdata('poll_' . $poll_id) ? $this->session->userdata('poll_' . $poll_id) : array();
 			
 			// Calculate percentages for each poll option
 			if ( ! empty($data['poll']['options']))
@@ -165,8 +181,11 @@ class Polls extends Public_Controller {
 	 * Show poll results
 	 *
 	 * @author Victor MichnUNowicz
+	 * 
 	 * @access public
-	 * @param string $slug The slug of the poll
+	 * 
+	 * @param string 			The slug of the poll
+	 * @param bool 				Force showing of results
 	 */
 	function results($slug = NULL)
 	{

@@ -24,33 +24,44 @@
 				<?php if ( isset($poll['options']) ): ?>
 					<?php foreach($poll['options'] as $option): ?>
 						<?php if ($option !== ''): ?>
-							<li><input type="text" name="options[<?php echo $option['id']; ?>]" value="<?php echo $option['title']; ?>" /></li>
+							<li>
+								<?php echo form_dropdown('options[' . $option['id'] . '][type]', array('defined'=>lang('polls.defined'), 'other'=>lang('polls.other')), $option['type']); ?>
+								<input type="text" name="options[<?php echo $option['id']; ?>]" value="<?php echo $option['title']; ?>" />
+							</li>
 						<?php endif; ?>
 					<?php endforeach; ?>
 				<?php else: ?>
-					<li><input type="text" name="options[]" /></li>
+					<li>
+						<select name="options[]" />
+						<input type="text" name="options[]" />
+					</li>
 				<?php endif; ?>
 				<li><input type="text" name="options[]" /></li>
 			</ul>
 			<br style="clear:both;" />
 		</li>
-
+		
 		<li class="odd">
+			<label for="type"><?php echo lang('polls.type_label'); ?></label>
+			<?php echo form_dropdown('type', array('single'=>lang('polls.single'), 'multiple'=>lang('polls.multiple')), $poll['type']); ?>
+		</li>
+
+		<li class="even">
 			<label for="open_date"><?php echo lang('polls.open_date_label'); ?></label>
 			<?php echo form_input('open_date', timestamp_to_date($poll['open_date']), 'id="open_date"'); ?>
 		</li>
 
-		<li class="even">
+		<li class="odd">
 			<label for="close_date"><?php echo lang('polls.close_date_label'); ?></label>
 			<?php echo form_input('close_date', timestamp_to_date($poll['close_date']), 'id="close_date"'); ?>
 		</li>
 
-		<li class="odd">
+		<li class="even">
 			<label for="comments"><?php echo lang('polls.comments_label'); ?></label>
 			<?php echo form_dropdown('comments_enabled', array('1'=>lang('polls.yes'), '0'=>lang('polls.no')), $poll['comments_enabled']); ?>
 		</li>
 
-		<li class="even">
+		<li class="odd">
 			<label for="members_only"><?php echo lang('polls.members_only_label'); ?></label>
 			<?php echo form_dropdown('members_only', array('1'=>lang('polls.yes'), '0'=>lang('polls.no')), $poll['members_only']); ?>
 		</li>

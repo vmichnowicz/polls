@@ -30,6 +30,7 @@ class Poll_options_m extends MY_Model {
    			{
 				$results[] = array(
 					'id' => $row->id,
+					'type' => $row->type,
 					'title' => $row->title,
 					'votes' => $row->votes
 				);
@@ -62,6 +63,7 @@ class Poll_options_m extends MY_Model {
 			{
 				$data = array(
 					'poll_id' => $poll_id,
+					'type' => $type,
 					'title' => $option
 				);
 				// Insert poll option into the database
@@ -121,16 +123,33 @@ class Poll_options_m extends MY_Model {
 	}
 	
 	/**
-	 * Record a vote for a given poll options
+	 * Record a vote for a given poll option
 	 *
 	 * @author Victor Michnowicz
+	 * 
 	 * @access public
-	 * @param array $poll_option_id The ID of the poll option
+	 * 
+	 * @param int 			The ID of the poll option
+	 * @param string 		The "other" vote text (optional)
+	 * 
 	 * @return bool
 	 */	
-	public function record_vote($poll_option_id)
+	public function record_vote($poll_option_id, $poll_other_vote = NULL)
 	{
+		
 		$this->db->query("UPDATE poll_options SET votes = votes +1 WHERE id = $poll_option_id");
+		
+		// If an "other" poll option was specified
+		if ($poll_other_vote)
+		{
+			$data = array(
+				'parent_id' 	=> $poll_option_id,
+				'text' 			=> $poll_other_vote
+			);
+			
+			$this->db->insert('poll_other_votes', $data);
+		}
+		
 		return TRUE;
 	}
 
@@ -183,7 +202,6 @@ class Poll_options_m extends MY_Model {
 		
 		return TRUE;
 
-		
 	}
 
 }

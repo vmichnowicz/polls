@@ -28,16 +28,17 @@ class Polls_m extends MY_Model {
 			foreach ($query->result() as $row)
    			{
 				$results[] = array(
-					'id' => $row->id,
-					'slug' => $row->slug,
-					'title' => $row->title,
-					'description' => $row->description,
-					'open_date' => $row->open_date,
-					'close_date' => $row->close_date,
-					'created' => $row->created,
-					'last_updated' => $row->last_updated,
-					'comments_enabled' => $row->comments_enabled,
-					'members_only' => $row->members_only
+					'id' 				=> $row->id,
+					'slug' 				=> $row->slug,
+					'title' 			=> $row->title,
+					'description' 		=> $row->description,
+					'open_date' 		=> $row->open_date,
+					'close_date' 		=> $row->close_date,
+					'created' 			=> $row->created,
+					'last_updated' 		=> $row->last_updated,
+					'type' 				=> $row->type,
+					'comments_enabled' 	=> $row->comments_enabled,
+					'members_only' 		=> $row->members_only
 				);
 			}
 			
@@ -129,15 +130,16 @@ class Polls_m extends MY_Model {
 			$row = $query->row(); 
 
 			$data = array(
-				'id' => $row->id,
-				'slug' => $row->slug,
-				'title' => $row->title,
-				'description' => $row->description,
-				'open_date' => $row->open_date,
-				'close_date' => $row->close_date,
-				'created' => $row->created,
-				'comments_enabled' => (int)$row->comments_enabled,
-				'members_only' => (int)$row->members_only
+				'id' 				=> $row->id,
+				'slug' 				=> $row->slug,
+				'title' 			=> $row->title,
+				'description' 		=> $row->description,
+				'open_date' 		=> $row->open_date,
+				'close_date' 		=> $row->close_date,
+				'type' 				=> $row->type,
+				'created' 			=> $row->created,
+				'comments_enabled' 	=> (int)$row->comments_enabled,
+				'members_only' 		=> (int)$row->members_only
 			);
 			
 			return $data;
@@ -159,14 +161,15 @@ class Polls_m extends MY_Model {
 	{
 		// Prep data for insertion into the database
 		$data = array(
-			'title' => $input['title'],
-			'slug' => $input['slug'],
-			'description' => $input['description'],
-			'open_date' => (int)date_to_timestamp($input['open_date']),
-			'close_date' => (int)date_to_timestamp($input['close_date']),
-			'comments_enabled' => (int)$input['comments_enabled'],
-			'members_only' => (int)$input['members_only'],
-			'created' => time()
+			'title' 			=> $input['title'],
+			'slug' 				=> $input['slug'],
+			'description' 		=> $input['description'],
+			'open_date' 		=> (int)date_to_timestamp($input['open_date']),
+			'close_date' 		=> (int)date_to_timestamp($input['close_date']),
+			'type' 				=> $input['type'],
+			'comments_enabled' 	=> (int)$input['comments_enabled'],
+			'members_only' 		=> (int)$input['members_only'],
+			'created' 			=> time()
 		);
 		
 		// Insert that data
@@ -207,14 +210,15 @@ class Polls_m extends MY_Model {
 	{
 		// Get the poll data
 		$data = array(
-			'title' => $input['title'],
-			'slug' => $input['slug'],
-			'description' => $input['description'],
-			'open_date' => (int)date_to_timestamp($input['open_date']),
-			'close_date' => (int)date_to_timestamp($input['close_date']),
-			'comments_enabled' => (int)$input['comments_enabled'],
-			'members_only' => (int)$input['members_only'],
-			'last_updated' => time()
+			'title' 			=> $input['title'],
+			'slug' 				=> $input['slug'],
+			'description' 		=> $input['description'],
+			'open_date' 		=> (int)date_to_timestamp($input['open_date']),
+			'close_date' 		=> (int)date_to_timestamp($input['close_date']),
+			'type' 				=> $input['type'],
+			'comments_enabled' 	=> (int)$input['comments_enabled'],
+			'members_only' 		=> (int)$input['members_only'],
+			'last_updated' 		=> time()
 		);
 		
 		// Update poll data

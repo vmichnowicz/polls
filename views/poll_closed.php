@@ -1,13 +1,13 @@
 <h2><?php echo $poll['title']; ?></h2>
 
 <p>
-<?php echo $poll['description']; ?>
+	<?php echo $poll['description']; ?>
 </p>
 
 <?php if (count($poll['options']) > 0): ?>
 <ul class="poll_options">
 	<?php foreach($poll['options'] as $option): ?>
-		<li<?php echo ($user_vote == $option['id']) ? ' class="user_vote"' : NULL; ?>>
+		<li<?php echo ( in_array($option['id'], $user_vote) ) ? ' class="user_vote"' : NULL; ?>>
 			<span><?php echo $option['title']; ?></span>
 			<div style="width: <?php echo $option['percent']; ?>%"><?php echo $option['percent']; ?>%</div>
 		</li>
