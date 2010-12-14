@@ -120,7 +120,7 @@ class Polls extends Public_Controller {
 							 * It is assumed that JavaScript will be used to hide the text input unless
 							 * the checkbox or radio button is selected.
 							 */
-							if ( isset($votes[(int)$vote_id]))
+							if ( isset($votes[(int)$vote_id]) )
 							{
 								// Merge our user input text into our $votes array
 								$votes[$vote_id]['other'] = trim($vote_info['other']);

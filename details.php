@@ -79,6 +79,7 @@ class Module_Polls extends Module {
 			FOREIGN KEY (`parent_id`)
 			REFERENCES `poll_options` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 		");
+		
 		// It worked!
 		return TRUE;
 	}

@@ -114,7 +114,7 @@ class Polls_m extends MY_Model {
 	 * @access public
 	 * @param int poll ID
 	 * @return mixed
-	 */		
+	 */
 	public function get_poll_by_id($id)
 	{	
 		$this->db
@@ -138,8 +138,8 @@ class Polls_m extends MY_Model {
 				'close_date' 		=> $row->close_date,
 				'type' 				=> $row->type,
 				'created' 			=> $row->created,
-				'comments_enabled' 	=> (int)$row->comments_enabled,
-				'members_only' 		=> (int)$row->members_only
+				'comments_enabled' 	=> (bool)$row->comments_enabled,
+				'members_only' 		=> (bool)$row->members_only
 			);
 			
 			return $data;

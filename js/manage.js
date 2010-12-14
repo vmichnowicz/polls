@@ -1,5 +1,30 @@
 jQuery(document).ready(function($) {
 	
+	var option_focus = false;
+	
+	$('#new_option_title').bind({
+		focusin: function() {
+			option_focus = true;
+			console.log('has focus...');
+		},
+		focusout: function() {
+			option_focus = false;
+			console.log('does not have focus...');
+		}
+	});
+	
+	$('#new_option_title').keyup(function(e) {
+		if (e.which == 13) {
+			add_option();
+		}
+	});
+	
+	$('form').submit(function(e) {
+		if (option_focus) {
+			e.preventDefault();
+		}
+	});
+	
 	$('#add_new_option').live('click', function() {
 		var options = $('#section_options');
 		var poll_id = $('#poll_id').val();
@@ -22,10 +47,7 @@ jQuery(document).ready(function($) {
 		
 	});
 	
-	var option_count = 0;
-	
-	$('#add_a_new_option').click(function() {
-		
+	function add_option() {
 		var type = $('#new_option_type').val();
 		var title = $('#new_option_title').val();
 		
@@ -56,41 +78,13 @@ jQuery(document).ready(function($) {
 			
 			$('#new_option_title').val('');
 		}
-	});
+	}
 	
-	/*
-	$('input[name="options[]"]').live('focusin focusout', function(e) {
-		var val = $(this).val();
-		var inputs = $('input[name="options[]"]');
-		var blank_inupts = 0;
-		
-		$(inputs).each(function() {
-			if ($(this).val() == '')
-			{
-				blank_inupts = blank_inupts + 1;
-			}
-		});
-		
-		// Focus in
-		if (e.type == 'focusin')
-		{
-			if ( ! val && blank_inupts < 2)
-			{
-				$(this).clone().appendTo('#options').wrap('<li />');
-				
-			}
-		}
-		
-		// Focus out
-		if (e.type == 'focusout')
-		{
-			if (!val && blank_inupts > 2)
-			{
-				$(this).remove();
-			}
-		}
+	var option_count = 0;
+	
+	$('#add_a_new_option').click(function() {
+		add_option();
 	});
-	*/
 	
 	// Datepicker
 	$("#open_date, #close_date").datepicker({ dateFormat: 'yy/m/d' });
