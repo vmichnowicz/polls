@@ -14,15 +14,20 @@ class Poll_options_m extends MY_Model {
 	 * Get all poll options with the poll ID that is passed in
 	 *
 	 * @author Victor Michnowicz
+	 * 
 	 * @access public
-	 * @param int $id ID of the poll
+	 * 
+	 * @param int 			ID of the poll
+	 * 
 	 * @return mixed
 	 */
 	public function get_all_where_poll_id($id)
 	{
 		$results = array();
 
-		$query = $this->db->query("SELECT * FROM poll_options WHERE poll_id = $id");
+		$query = $this->db
+			->where('poll_id', $id)
+			->get('poll_options');
 		
 		if ($query->num_rows() > 0)
 		{
@@ -47,10 +52,13 @@ class Poll_options_m extends MY_Model {
 	/**
 	 * Insert new poll options into the database
 	 *
-	 * @author Victor 
+	 * @author Victor
+	 * 
 	 * @access public
-	 * @param int $poll_id ID of the poll
-	 * @param array $options The poll option data to insert
+	 * 
+	 * @param int 			ID of the poll
+	 * @param array 		The poll option data to insert
+	 * 
 	 * @return bool
 	 */
 	public function add($poll_id, $options)
@@ -63,8 +71,8 @@ class Poll_options_m extends MY_Model {
 			{
 				$data = array(
 					'poll_id' => $poll_id,
-					'type' => $type,
-					'title' => $option
+					'type' => $option['type'],
+					'title' => $option['title']
 				);
 				// Insert poll option into the database
 				$this->db->insert('poll_options', $data); 
@@ -75,21 +83,39 @@ class Poll_options_m extends MY_Model {
 
 	}
 	
+	public function add_single($poll_id, $option_type, $option_title)
+	{
+		$data = array(
+			'poll_id' => $poll_id,
+			'type' => $option_type,
+			'title' => trim($option_title)
+		);
+		
+		// Insert poll option into the database
+		$this->db->insert('poll_options', $data); 
+		
+		return TRUE;
+	}
+	
 	/**
 	 * Get the total number of votes for a given poll
 	 *
-	 * @author Victor 
+	 * @author Victor
+	 * 
 	 * @access public
-	 * @param int $poll_id ID of the poll
+	 * 
+	 * @param int 			ID of the poll
+	 * 
 	 * @return int
 	 */	
 	public function get_total_votes($poll_id)
 	{
 		$votes = 0;
 		
-		$this->db->select('votes');
-		$this->db->where('poll_id', $poll_id);
-		$query = $this->db->get('poll_options');
+		$query = $this->db
+			->select('votes')
+			->where('poll_id', $poll_id)
+			->get('poll_options');
 		
 		if ($query->num_rows() > 0)
 		{
@@ -106,17 +132,21 @@ class Poll_options_m extends MY_Model {
 	 * Check to see if a poll options exists
 	 *
 	 * @author Victor Michnowicz
+	 * 
 	 * @access public
-	 * @param int $poll_id The ID of the poll
-	 * @param array $poll_option_id The ID of the poll option
+	 * 
+	 * @param int 			The ID of the poll
+	 * @param array 		The ID of the poll option
+	 * 
 	 * @return bool
 	 */	
 	public function poll_option_exists($poll_id, $poll_option_id)
 	{
-		$this->db->select('id');
-		$this->db->where('poll_id', $poll_id);
-		$this->db->where('id', $poll_option_id);
-		$query = $this->db->get('poll_options');
+		$query = $this->db
+			->select('id')
+			->where('poll_id', $poll_id)
+			->where('id', $poll_option_id)
+			->get('poll_options');
 		
 		// Did we find poll option with the ID and poll ID provided?
 		return ($query->num_rows() > 0) ? TRUE : FALSE;
@@ -154,19 +184,27 @@ class Poll_options_m extends MY_Model {
 	}
 
 	/**
-	 * Update existing poll options
+	 * Update existing poll options (or add a new one if the poll option does not exist)
 	 *
 	 * @author Victor Michnowicz
+	 * 
 	 * @access public
-	 * @param int $poll_id The ID of the poll
-	 * @param array $input The data to use for updating the DB record
+	 * 
+	 * @param int 			The ID of the poll
+	 * @param array 		The data to use for updating the DB record
+	 * 
 	 * @return bool
 	 */
 	public function update($poll_id, $input)
 	{
-		
-		foreach ( $input as $option_id => $option_title )
+		foreach ( $input as $option_id => $option )
 		{
+			// Get the option title
+			$option_title = $option['title'];
+			
+			// Get option type (default to "defined")
+			$option_type = $option['type'] == 'other' ? 'other' : 'defined';
+			
 			// If this poll option exists
 			if ( $this->poll_option_exists($poll_id, $option_id) )
 			{
@@ -174,16 +212,23 @@ class Poll_options_m extends MY_Model {
 				if ($option_title == '')
 				{
 					// Delete it!
-					$this->db->where( 'id', $option_id );
-					$this->db->delete('poll_options');
+					$this->db
+						->where('id', $option_id)
+						->delete('poll_options');
 				}
 				
 				// The title is not blank (the user wants to update this mofo fo' sho)
 				else
 				{
+					$data = array(
+						'title' 	=> $option_title,
+						'type' 		=> $option_type
+					);
+					
 					// Update it!
-					$this->db->where( 'id', $option_id );
-					$this->db->update( 'poll_options', array('title' => $option_title) ); 
+					$this->db
+						->where('id', $option_id)
+						->update('poll_options', $data); 
 				}
 			}
 			

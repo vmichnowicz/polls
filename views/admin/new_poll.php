@@ -22,7 +22,7 @@
 		<li class="even">
 			<label for="options"><?php echo lang('polls.options_label'); ?></label>
 
-			<div style="float:left">
+			<div style="float: left">
 			<ul id="options">
 				<?php if ( isset($poll['options']) ): ?>
 					<?php foreach($poll['options'] as $option): ?>
@@ -30,11 +30,15 @@
 							<li><input type="text" name="options[]" value="<?php echo $option; ?>" /></li>
 						<?php endif; ?>
 					<?php endforeach; ?>
-				<?php else: ?>
-					<li><input type="text" name="options[]" /></li>
 				<?php endif; ?>
-				<li><input type="text" name="options[]" /></li>
-			</ul>
+				<li id="new_option">
+					<select id="new_option_type">
+						<option value="defined"><?php echo lang('polls.defined'); ?></option>
+						<option value="other"><?php echo lang('polls.other'); ?></option>
+					</select>
+					<input type="text" name="new_option_title" id="new_option_title" />
+					<input type="button" id="add_a_new_option" value="Add Option" />
+				</li>
 			</div>
 		</li>
 		

@@ -60,11 +60,6 @@ class Admin extends Admin_Controller {
 				'rules' => 'trim'
 			),
 			array(
-				'field' => 'options[]',
-				'label' => 'Options',
-				'rules' => 'trim'
-			),
-			array(
 				'field' => 'open_date',
 				'label' => 'lang:polls.open_date_label ',
 				'rules' => 'callback_date_check'
@@ -310,10 +305,35 @@ class Admin extends Admin_Controller {
 		$this->form_validation->set_message('date_check', lang('polls.invalid_date') );
 		return FALSE;
 	}
+	
+	/**
+	 * Add a poll option
+	 *
+	 * @author Victor Michnowicz
+	 * 
+	 * @access public
+	 * 
+	 * @param string YYYY/MM/DD date string
+	 * 
+	 * @return string
+	 */
+	public function ajax_add_option()
+	{
+		$poll_id = $this->input->post('poll_id');
+		$option_type = $this->input->post('new_option_type');
+		$option_title = $this->input->post('new_option_title');
+		
+		if ($this->poll_options_m->add_single($poll_id, $option_type, $option_title))
+		{
+			return TRUE;
+		}
+	}
 
 	public function ajax_update_order()
 	{
 		// This would be cool. Do this.
 	}
+	
+	
 	
 }

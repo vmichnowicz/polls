@@ -26,7 +26,6 @@ class Polls extends Public_Controller {
 		$this->load->model('poll_options_m');
 		$this->load->model('comments/comments_m');
 		$this->load->helper('cookie');
-		$this->load->helper('ajax');
 		$this->lang->load('polls');
 	}
 	
@@ -81,16 +80,59 @@ class Polls extends Public_Controller {
 				// Grab all votes (or vote)
 				$votes = $this->input->post('vote');
 				
+				// Grab all "other" inputs
+				$other = $this->input->post('other');
+				
+				// Array that will later be stored in cookies and used to determine what option(s) user voted for
+				$votes_ids = array();
+				
 				// If user sumitted multiple votes in a poll that only allows one vote (very naugty!)
 				if (count($votes) > 1 AND $data['poll']['type'] != 'multiple')
 				{
 					show_404();
 				}
 				
+				// If our $votes are *not* an array (that means our poll type is "single")
+				if ( ! is_array($votes) )
+				{
+					$votes = array(
+						(int)$votes => array(
+							'id' => $votes
+						)
+					);
+				}
+				
+				// If we have "other" inputs
+				if ($other)
+				{
+					// Loop through each $other input
+					foreach ($other as $vote_id => $vote_info)
+					{
+						// If user entered text in our "other" text input field
+						if (trim($vote_info['other']))
+						{
+							/*
+							 * If the user selected this option
+							 * 
+							 * If a user just inputs text into this field, but does not select the corresponding
+							 * radio or checkbox input as well, the vote will not be cast.
+							 * A user *must* select the checkbox or radio button to cast a vote.
+							 * It is assumed that JavaScript will be used to hide the text input unless
+							 * the checkbox or radio button is selected.
+							 */
+							if ( isset($votes[(int)$vote_id]))
+							{
+								// Merge our user input text into our $votes array
+								$votes[$vote_id]['other'] = trim($vote_info['other']);
+							}
+						}
+					}
+				}
+				
 				// Go through our $votes array
 				foreach ($votes as $vote)
 				{
-					// Make sure this poll option is valid
+					// Make sure this poll option exists
 					if ($this->poll_options_m->poll_option_exists($poll_id, $vote['id']))
 					{
 						// Get "other" vote (if it exists)
@@ -99,14 +141,17 @@ class Polls extends Public_Controller {
 						// Record the vote
 						$this->poll_options_m->record_vote($vote['id'], $other);
 					}
+					
+					// Add ID to $votes_ids array
+					array_push($votes_ids, $vote['id']);
 				}
 				
 				// Set session data so this user can not vote again
 				// ... Unless he circumvents our near-perfect cookie-based validation approach (insert sarcasm)
-//				$this->session->set_userdata('poll_' . $poll_id, $votes);
+				$this->session->set_userdata('poll_' . $poll_id, $votes);
 				
 				// User just voted
-//				$already_voted = TRUE;
+				$already_voted = TRUE;
 			}
 			
 			// Get poll options and votes
@@ -160,12 +205,19 @@ class Polls extends Public_Controller {
 			// This poll is closed, the user has already voted in it, or show_results is now TRUE
 			else
 			{
-				$this->template
-					->title($data['poll']['title'])
-					->append_metadata( css('polls.css', 'polls') )
-					->set_breadcrumb( lang('polls.polls'), 'polls')
-					->set_breadcrumb( $data['poll']['title'] )
-					->build('poll_closed', $data);
+				if ($show_results)
+				{
+					$this->template
+						->title($data['poll']['title'])
+						->append_metadata( css('polls.css', 'polls') )
+						->set_breadcrumb( lang('polls.polls'), 'polls')
+						->set_breadcrumb( $data['poll']['title'] )
+						->build('poll_closed', $data);
+				}
+				else
+				{
+					redirect('polls/results/' . $slug);
+				}
 			}	
 			
 		}

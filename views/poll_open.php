@@ -17,7 +17,7 @@
 					<label for="option_<?php echo $option['id']; ?>">
 					
 						<?php if ($poll['type'] == 'single'): ?>
-							<input type="radio" name="vote[<?php echo $option['id']; ?>][id]" id="option_<?php echo $option['id']; ?>" value="<?php echo $option['id']; ?>" />
+							<input type="radio" name="vote" id="option_<?php echo $option['id']; ?>" value="<?php echo $option['id']; ?>" />
 						<?php elseif ($poll['type'] == 'multiple'): ?>
 							<input type="checkbox" name="vote[<?php echo $option['id']; ?>][id]" id="option_<?php echo $option['id']; ?>" value="<?php echo $option['id']; ?>" />
 						<?php endif; ?>
@@ -27,7 +27,7 @@
 					</label>
 					
 					<?php if ($option['type'] == 'other'): ?>
-						<input type="text" name="vote[<?php echo $option['id']; ?>][other]" id="other_<?php echo $option['id']; ?>" />
+						<input type="text" name="other[<?php echo $option['id']; ?>][other]" id="other_<?php echo $option['id']; ?>" />
 					<?php endif; ?>
 					
 				</li>

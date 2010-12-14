@@ -27,6 +27,7 @@ class Module_Polls extends Module {
 			`id` tinyint(11) unsigned NOT NULL AUTO_INCREMENT,
 			`slug` varchar(64) NOT NULL,
 			`title` varchar(64) NOT NULL,
+			`type` enum('single','multiple') NOT NULL DEFAULT 'single',
 			`description` text,
 			`open_date` int(16) unsigned DEFAULT NULL,
 			`close_date` int(16) unsigned DEFAULT NULL,
@@ -35,7 +36,7 @@ class Module_Polls extends Module {
 			`comments_enabled` tinyint(1) NOT NULL DEFAULT '0',
 			`members_only` tinyint(1) NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 		");
 		
 		// Create poll_options table
@@ -43,12 +44,25 @@ class Module_Polls extends Module {
 			CREATE TABLE IF NOT EXISTS `poll_options` (
 			`id` smallint(11) unsigned NOT NULL AUTO_INCREMENT,
 			`poll_id` tinyint(11) unsigned NOT NULL,
+			`type` enum('defined','other') NOT NULL DEFAULT 'defined',
 			`title` varchar(64) NOT NULL,
 			`order` tinyint(2) unsigned DEFAULT NULL,
 			`votes` mediumint(11) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`),
 			KEY `poll_id` (`poll_id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		");
+		
+		// Create poll_other_votes table
+		$this->db->query("
+			CREATE TABLE IF NOT EXISTS `poll_other_votes` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`parent_id` smallint(11) unsigned NOT NULL,
+			`text` tinytext NOT NULL,
+			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (`id`),
+			KEY `parent_id` (`parent_id`)
+			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 		");
 		
 		// Referental integrity fo' sho
@@ -59,27 +73,32 @@ class Module_Polls extends Module {
 			REFERENCES `polls` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 		");
 		
+		$this->db->query("
+			ALTER TABLE `poll_other_votes`
+			ADD CONSTRAINT `poll_other_votes_ibfk_1`
+			FOREIGN KEY (`parent_id`)
+			REFERENCES `poll_options` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+		");
 		// It worked!
 		return TRUE;
 	}
 
 	public function uninstall()
 	{
-		// Get 
-		$this->db->query("DROP TABLE `poll_options`, `polls`");
+		// Drop some tables
+		$this->db->query("DROP TABLE `poll_other_votes`, `poll_options`, `polls`");
 		return TRUE;
 	}
 
 	public function upgrade($old_version)
 	{
-		// Your Upgrade Logic
+		// Add this to my to-do list...
 		return TRUE;
 	}
 
 	public function help()
 	{
-		// Return a string containing help info
-		// You could include a file and return it here.
+		// This also...
 		return "Some Help Stuff";
 	}
 }
