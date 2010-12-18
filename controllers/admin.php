@@ -216,6 +216,43 @@ class Admin extends Admin_Controller {
 	}
 
 	/**
+	 * View poll results
+	 *
+	 * @author Victor Michnowicz
+	 * @access public
+	 * @param int $id The ID of the poll
+	 * @return void
+	 */
+	public function results($id = NULL)
+	{
+		$data['poll'] = $this->polls_m->get_poll_by_id($id);
+		$data['options'] = $this->poll_options_m->get_all_where_poll_id($id);
+		$data['total_votes'] = $this->poll_options_m->get_total_votes($id);
+		
+		// Calculate percentages for each poll option
+		if ( ! empty($data['options']))
+		{
+			foreach ($data['options'] as &$option)
+			{
+				if ($option['votes'] > 0)
+				{
+					$option['percent'] = round($option['votes'] / $data['total_votes'] * 100, 1);
+				}
+				else
+				{
+					$option['percent'] = 0;
+				}
+			}
+		}
+		
+		// Build that thang
+		$this->template
+			->append_metadata( css('results.css', 'polls') )
+			->title($this->module_details['name'], lang('polls.results_label'))
+			->build('admin/poll_results', $data);
+	}
+
+	/**
 	 * Delete an existing poll
 	 *
 	 * @author Victor Michnowicz

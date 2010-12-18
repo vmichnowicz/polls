@@ -1,6 +1,6 @@
 <h2 id="page_title"><?php echo lang('polls.galleries_label'); ?></h2>
 
-<?php if (count($polls) > 0): ?>
+<?php if ($polls): ?>
 <ul class="poll_options">
 	<?php foreach($polls as $poll): ?>
 		<li>

@@ -27,6 +27,7 @@ $lang['polls.install_error']			= 'The module could not be installed.';
 // View poll action labels
 $lang['polls.view_label']				= 'View Poll';
 $lang['polls.manage_label']				= 'Manage Poll';
+$lang['polls.results_label']			= 'Poll Results';
 $lang['polls.delete_label']				= 'Delete Poll';
 
 // View poll labels

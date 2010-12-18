@@ -1,0 +1,49 @@
+h2 em {
+	font-size: 12px;
+	font-weight: normal;
+	color: #555;
+	text-shadow: none;
+}
+
+#results {
+	margin: 0px;
+	padding: 0px;
+	list-style-type: none;
+}
+
+#results li {
+	border-top: 1px solid #efefef;
+	margin: 0px;
+	padding: 5px 0px;
+}
+
+#results li:first-child {
+	border-top: 0px none;
+}
+
+#results p {
+	padding: 5px 0px;
+	margin: 0px;
+}
+
+#results div {
+	height: 2em;
+	text-shadow: 0px 0px 5px #fff;
+	font-weight: bold;
+	text-indent: 5px;
+	line-height: 2em;
+	background-color: #ff6900;
+	-webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.25) inset;
+	color: #333;
+}
+
+#results .other {
+	margin-left: 30px;
+	list-style-type: square;
+	color: #555;
+}
+
+#results .other em {
+	font-size: 11px;
+	color: #999;
+}

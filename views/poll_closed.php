@@ -7,7 +7,7 @@
 <?php if (count($poll['options']) > 0): ?>
 <ul class="poll_options">
 	<?php foreach($poll['options'] as $option): ?>
-		<li<?php echo ( in_array($option['id'], $user_vote) ) ? ' class="user_vote"' : NULL; ?>>
+		<li<?php echo ( array_key_exists($option['id'], $user_vote) ) ? ' class="user_vote"' : NULL; ?>>
 			<span><?php echo $option['title']; ?></span>
 			<div style="width: <?php echo $option['percent']; ?>%"><?php echo $option['percent']; ?>%</div>
 		</li>
@@ -26,3 +26,21 @@
 		echo display_comments($poll['id']);
 	}
 ?>
+
+<?php
+
+if ( $this->poll_votes_m->allready_voted($poll['id']) )
+{
+	echo 'you already voted!';
+}
+
+?>
+
+
+<?php echo $this->session->userdata('user_id'); ?>
+<br />
+<?php echo $this->session->userdata('ip_address'); ?>
+<br />
+<?php echo $this->session->userdata('user_agent'); ?>
+<br />
+<?php echo $this->session->userdata('session_id'); ?>

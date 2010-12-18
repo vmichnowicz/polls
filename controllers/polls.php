@@ -24,6 +24,7 @@ class Polls extends Public_Controller {
 		// Load the required classes
 		$this->load->model('polls_m');
 		$this->load->model('poll_options_m');
+		$this->load->model('poll_votes_m');
 		$this->load->model('comments/comments_m');
 		$this->load->helper('cookie');
 		$this->lang->load('polls');
@@ -73,7 +74,7 @@ class Polls extends Public_Controller {
 			
 			// Has user already voted in this poll?
 			$already_voted = ( $this->session->userdata('poll_' . $poll_id) ) ? TRUE : FALSE;
-			
+			$already_voted = FALSE;
 			// If the user decided to vote, has not alreay voted in this poll, AND this poll is not members only AND the user is not logged in
 			if ( $this->input->post('vote') AND ! $already_voted AND $members_only_check )
 			{
@@ -149,6 +150,7 @@ class Polls extends Public_Controller {
 				// Set session data so this user can not vote again
 				// ... Unless he circumvents our near-perfect cookie-based validation approach (insert sarcasm)
 				$this->session->set_userdata('poll_' . $poll_id, $votes);
+				$this->poll_votes_m->record_vote($poll_id);
 				
 				// User just voted
 				$already_voted = TRUE;

@@ -34,8 +34,9 @@
 				<td>
 					<?php echo
 					anchor('polls/' 					. $poll['slug'], 	lang('polls.view_label'), 'target="_blank"') 	. ' | ' .
-					anchor('admin/polls/manage/' 			. $poll['id'], 	lang('polls.manage_label')) 					. ' | ' .
-					anchor('admin/polls/delete/'		 	. $poll['id'], 	lang('polls.delete_label'), array('class'=>'confirm')); ?>
+					anchor('admin/polls/manage/' 		. $poll['id'], 	lang('polls.manage_label')) 					. ' | ' .
+					anchor('admin/polls/results/' 		. $poll['id'], 	lang('polls.results_label')) 					. ' | ' .
+					anchor('admin/polls/delete/'		. $poll['id'], 	lang('polls.delete_label'), array('class'=>'confirm')); ?>
 				</td>
 			</tr>
 			<?php endforeach; ?>

@@ -33,11 +33,31 @@ class Poll_options_m extends MY_Model {
 		{
 			foreach ($query->result() as $row)
    			{
+   				// Let's see if we have any other votes for this poll option
+				$q = $this->db
+					->where('parent_id', $row->id)
+					->get('poll_other_votes');
+				
+				$other = array();
+				
+				if ($q->num_rows() > 0)
+				{
+					foreach ($q->result() as $r)
+					{
+						$other[$r->id] = array(
+							'id' 	=> $r->id,
+							'text' => htmlentities($r->text, ENT_QUOTES), // Convert all applicable characters to HTML entities
+							'created' => strtotime($r->created)
+						);
+					}
+				}
+				
 				$results[] = array(
 					'id' => $row->id,
 					'type' => $row->type,
 					'title' => $row->title,
-					'votes' => $row->votes
+					'votes' => $row->votes,
+					'other' => $other
 				);
 			}
 			
