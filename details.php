@@ -65,19 +65,47 @@ class Module_Polls extends Module {
 			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 		");
 		
+		// Create poll_votes table
+		$this->db->query("
+			CREATE TABLE IF NOT EXISTS `poll_voters` (
+			`id` mediumint(32) unsigned NOT NULL AUTO_INCREMENT,
+			`poll_id` tinyint(11) unsigned NOT NULL,
+			`user_id` smallint(5) unsigned DEFAULT NULL,
+			`session_id` varchar(40) NOT NULL,
+			`ip_address` varchar(16) NOT NULL,
+			`timestamp` int(11) unsigned NOT NULL,
+			PRIMARY KEY (`id`),
+			KEY `poll_id` (`poll_id`),
+			KEY `user_id` (`user_id`)
+			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		");
+		
 		// Referental integrity fo' sho
 		$this->db->query("
 			ALTER TABLE `poll_options`
 			ADD CONSTRAINT `poll_options_ibfk_1`
 			FOREIGN KEY (`poll_id`)
-			REFERENCES `polls` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+			REFERENCES `polls` (`id`)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE;
 		");
 		
 		$this->db->query("
 			ALTER TABLE `poll_other_votes`
 			ADD CONSTRAINT `poll_other_votes_ibfk_1`
 			FOREIGN KEY (`parent_id`)
-			REFERENCES `poll_options` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+			REFERENCES `poll_options` (`id`)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE;
+		");
+		
+		$this->db->query("
+			ALTER TABLE `poll_voters`
+			ADD CONSTRAINT `poll_votes_ibfk_1`
+			FOREIGN KEY (`poll_id`)
+			REFERENCES `polls` (`id`)
+			ON DELETE CASCADE
+			ON UPDATE CASCADE;
 		");
 		
 		// It worked!

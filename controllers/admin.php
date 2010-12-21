@@ -214,6 +214,7 @@ class Admin extends Admin_Controller {
 			->append_metadata( js('admin.js', 'polls') )
 			->append_metadata( js('manage.js', 'polls') )
 			->append_metadata( css('admin.css', 'polls') )
+			->append_metadata( css('manage.css', 'polls') )
 			->title($this->module_details['name'], lang('polls.new_poll_label'))
 			->build('admin/manage_poll', $data);
 	}

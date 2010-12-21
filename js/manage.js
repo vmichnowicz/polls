@@ -1,27 +1,33 @@
 jQuery(document).ready(function($) {
 	
-	// Make options sortable along the "y" axis
+	// Function that gets run when the sort order changes
+	function sort() {
+		var poll_id = $('#poll_id').val();
+		var options = $('input[name^="options"]');
+		var obj = new Object();
+		
+		// Loop through all our poll optoins
+		$(options).each(function(i) {
+			var id = $(options).eq(i).attr('name');
+			id = id.replace('options[', '');
+			id = id.replace('][title]', '');
+			
+			// Add sort order to our object "obj"
+			obj[id] = i;
+			
+		});
+		
+		// POST our sort order
+		$.post(BASE_URL + 'admin/polls/ajax_update_order/' + poll_id, obj, function(data) {
+			// It worked!!! (probably)
+		});
+	}
+	
+	// Sort options on page load along the "y" axis
 	$('#options').sortable({
 		axis: 'y',
 		update: function() {
-			
-			var poll_id = $('#poll_id').val();
-			var options = $('input[name^="options"]');
-			var obj = new Object();
-			
-			$(options).each(function(i) {
-				var id = $(options).eq(i).attr('name');
-				id = id.replace('options[', '');
-				id = id.replace('][title]', '');
-				
-				obj[id] = i;
-				
-			});
-			
-			$.post(BASE_URL + 'admin/polls/ajax_update_order/' + poll_id, obj, function(data) {
-				// It worked!!!
-			});
-			
+			sort();
 		}
 	});
 	
@@ -33,17 +39,27 @@ jQuery(document).ready(function($) {
 		var title = $('#new_option_title').val();
 		
 		// Make sure user entered a title
-		if (title)
-		{
+		if (title) {
 			$.post(BASE_URL + 'admin/polls/ajax_add_option', {
 					'poll_id': $('#poll_id').val(),
 					'new_option_type': $('#new_option_type').val(),
 					'new_option_title': $('#new_option_title').val()
 				}, function(data) {
-				
-					$(options).load(BASE_URL + 'admin/polls/manage/' + poll_id + ' #section_options');
+					
+					// Load in new poll options and re-run sorting function on new data
+					$(options).load(BASE_URL + 'admin/polls/manage/' + poll_id + ' #section_options', function() {
+						$('#options').sortable({
+							axis: 'y',
+							update: function() {
+								sort();
+							}
+						});
+					});
 				
 			});
+		}
+		else {
+			alert('Please enter a poll option title.');
 		}
 	}
 	
@@ -58,5 +74,5 @@ jQuery(document).ready(function($) {
 			add_option();
 		}
 	});
-
+	
 });

@@ -1,0 +1,11 @@
+#options li {
+	padding-right: 30px;
+}
+
+.ui-sortable-helper {
+	border: 1px dashed #ff6900;
+}
+
+#options li:hover {
+	background: #fff url(../img/drag.png) no-repeat 98% 50%;
+}

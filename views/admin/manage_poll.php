@@ -31,14 +31,16 @@
 					A <strong>defined</strong> poll option lets the user vote for a poll option that you specify.
 					An <strong>other</strong> poll options allows the user to enter text into a text input for that particular option.
 				</p>
-				<div id="new_option">
-					<select name="new_option_type" id="new_option_type">
-						<option value="defined"><?php echo lang('polls.defined'); ?></option>
-						<option value="other"><?php echo lang('polls.other'); ?></option>
-					</select>
-					<input type="text" name="new_option_title" id="new_option_title" />
-					<input type="button" id="add_new_option" value="Add Option" />
-				</div>
+				<ul id="new_option">
+					<li>
+						<select name="new_option_type" id="new_option_type">
+							<option value="defined"><?php echo lang('polls.defined'); ?></option>
+							<option value="other"><?php echo lang('polls.other'); ?></option>
+						</select>
+						<input type="text" name="new_option_title" id="new_option_title" />
+						<input type="button" id="add_new_option" value="Add Option" />
+					</li>
+				</ul>
 				<ul id="options" style="float:left;" class="sortable">
 					<?php if ( isset($poll['options']) ): ?>
 						<?php foreach($poll['options'] as $option): ?>
@@ -58,7 +60,7 @@
 		<li class="odd">
 			<label for="type"><?php echo lang('polls.type_label'); ?></label>
 			<div style="float: left">
-				<p>
+				<p style="width: 700px">
 					A poll can either be <strong>single</strong> or <strong>multiple</strong>.
 					A <strong>single</strong> poll restricts users to only voting for one poll option.
 					A <strong>multiple</strong> poll allows the user to vote for multiple poll options.

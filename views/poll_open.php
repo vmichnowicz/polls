@@ -1,6 +1,5 @@
 <h2><?php echo $poll['title']; ?></h2>
 
-
 <hr />
 
 <p>

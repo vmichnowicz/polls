@@ -72,9 +72,9 @@ class Polls extends Public_Controller {
 			$members_only = $data['poll']['members_only'];
 			$members_only_check = ( $members_only AND !$this->ion_auth->logged_in() ) ? FALSE : TRUE;
 			
-			// Has user already voted in this poll?
-			$already_voted = ( $this->session->userdata('poll_' . $poll_id) ) ? TRUE : FALSE;
-			$already_voted = FALSE;
+			// Are we sure the user has not already voted in this poll?
+			$already_voted = $this->poll_voters_m->allready_voted($poll_id);
+			
 			// If the user decided to vote, has not alreay voted in this poll, AND this poll is not members only AND the user is not logged in
 			if ( $this->input->post('vote') AND ! $already_voted AND $members_only_check )
 			{
@@ -148,8 +148,9 @@ class Polls extends Public_Controller {
 				}
 				
 				// Set session data so this user can not vote again
-				// ... Unless he circumvents our near-perfect cookie-based validation approach (insert sarcasm)
 				$this->session->set_userdata('poll_' . $poll_id, $votes);
+				
+				// Record user IP and session data in database 
 				$this->poll_votes_m->record_vote($poll_id);
 				
 				// User just voted

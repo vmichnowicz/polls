@@ -10,7 +10,7 @@
 
 		<li class="even">
 			<label for="slug"><?php echo lang('polls.slug_label'); ?></label>
-			<?php echo form_input('slug', set_value('slug'), 'class="width-15"'); ?>
+			<input type="text" name="slug" id="slug" class="width-15" value="<?php echo set_value('slug'); ?>" />
 			<span class="required-icon tooltip">Required</span>
 		</li>
 
@@ -20,25 +20,34 @@
 		</li>
 
 		<li class="even">
-			<label for="options"><?php echo lang('polls.options_label'); ?></label>
-
+			<label for="options"><?php echo lang('polls.options_label'); ?></label>	
 			<div style="float: left">
-			<ul id="options">
-				<?php if ( isset($poll['options']) ): ?>
-					<?php foreach($poll['options'] as $option): ?>
-						<?php if ($option !== ''): ?>
-							<li><input type="text" name="options[]" value="<?php echo $option; ?>" /></li>
-						<?php endif; ?>
-					<?php endforeach; ?>
-				<?php endif; ?>
-				<li id="new_option">
-					<select id="new_option_type">
-						<option value="defined"><?php echo lang('polls.defined'); ?></option>
-						<option value="other"><?php echo lang('polls.other'); ?></option>
-					</select>
-					<input type="text" name="new_option_title" id="new_option_title" />
-					<input type="button" id="add_new_option" value="Add Option" />
-				</li>
+				<ul id="new_option">
+					<li>
+						<select id="new_option_type">
+							<option value="defined"><?php echo lang('polls.defined'); ?></option>
+							<option value="other"><?php echo lang('polls.other'); ?></option>
+						</select>
+						<input type="text" name="new_option_title" id="new_option_title" />
+						<input type="button" id="add_new_option" value="Add Option" />
+					</li>
+				</ul>
+				
+				<ul id="options">
+					<?php if ( isset($poll['options']) ): ?>
+						<?php foreach($poll['options'] as $option_key=>$option): ?>
+							<?php if (trim($option['title'])): ?>
+								<li>
+									<select name="options[<?php echo $option_key; ?>][type]">
+										<option value="defined" <?php echo $option['type'] == 'defined' ? 'selected="selected"' : NULL; ?>><?php echo lang('polls.defined'); ?></option>
+										<option value="other" <?php echo $option['type'] == 'other' ? 'selected="selected"' : NULL; ?>><?php echo lang('polls.other'); ?></option>
+									</select>
+									<input type="text" name="options[<?php echo $option_key; ?>][title]" value="<?php echo $option['title']; ?>" />
+								</li>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</ul>
 			</div>
 		</li>
 		
