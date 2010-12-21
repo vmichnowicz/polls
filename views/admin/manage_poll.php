@@ -27,9 +27,7 @@
 			
 			<div style="float: left; width: 700px;">
 				<p>
-					A poll option can either be <strong>defined</strong> or <strong>other</strong>.
-					A <strong>defined</strong> poll option lets the user vote for a poll option that you specify.
-					An <strong>other</strong> poll options allows the user to enter text into a text input for that particular option.
+					<?php echo lang('polls.options_info'); ?>
 				</p>
 				<ul id="new_option">
 					<li>
@@ -61,9 +59,7 @@
 			<label for="type"><?php echo lang('polls.type_label'); ?></label>
 			<div style="float: left">
 				<p style="width: 700px">
-					A poll can either be <strong>single</strong> or <strong>multiple</strong>.
-					A <strong>single</strong> poll restricts users to only voting for one poll option.
-					A <strong>multiple</strong> poll allows the user to vote for multiple poll options.
+					<?php echo lang('polls.type_info'); ?>
 				</p>
 				<?php echo form_dropdown('type', array('single'=>lang('polls.single'), 'multiple'=>lang('polls.multiple')), $poll['type']); ?>
 			</div>

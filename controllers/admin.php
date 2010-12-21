@@ -135,7 +135,7 @@ class Admin extends Admin_Controller {
 		{
 			
 			// Add the poll AND poll options into the database
-			if ( $this->polls_m->add($_POST) AND $this->poll_options_m->add($this->db->insert_id(), $_POST['options']) )
+			if ( $this->polls_m->add($_POST) AND $this->poll_options_m->add($this->db->insert_id(), $this->input->post('options')) )
 			{
 				// Great success! Both the poll and all the poll options were added successfully
 				$this->session->set_flashdata('success', lang('polls.create_success'));

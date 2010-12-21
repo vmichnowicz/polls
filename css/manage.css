@@ -4,6 +4,7 @@
 
 .ui-sortable-helper {
 	border: 1px dashed #ff6900;
+	padding: 14px 29px 14px 7px !important;
 }
 
 #options li:hover {

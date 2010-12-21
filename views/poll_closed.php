@@ -26,21 +26,3 @@
 		echo display_comments($poll['id']);
 	}
 ?>
-
-<?php
-
-if ( $this->poll_votes_m->allready_voted($poll['id']) )
-{
-	echo 'you already voted!';
-}
-
-?>
-
-
-<?php echo $this->session->userdata('user_id'); ?>
-<br />
-<?php echo $this->session->userdata('ip_address'); ?>
-<br />
-<?php echo $this->session->userdata('user_agent'); ?>
-<br />
-<?php echo $this->session->userdata('session_id'); ?>

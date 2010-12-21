@@ -22,6 +22,9 @@
 		<li class="even">
 			<label for="options"><?php echo lang('polls.options_label'); ?></label>	
 			<div style="float: left">
+				<p style="width: 700px">
+					<?php echo lang('polls.options_info'); ?>
+				</p>
 				<ul id="new_option">
 					<li>
 						<select id="new_option_type">
@@ -53,7 +56,12 @@
 		
 		<li class="odd">
 			<label for="type"><?php echo lang('polls.type_label'); ?></label>
-			<?php echo form_dropdown('type', array('single'=>lang('polls.single'), 'multiple'=>lang('polls.multiple')), set_value('type')); ?>
+			<div style="width: 700px; float: left;">
+				<p style="width: 700px">
+					<?php echo lang('polls.type_info'); ?>
+				</p>
+				<?php echo form_dropdown('type', array('single'=>lang('polls.single'), 'multiple'=>lang('polls.multiple')), set_value('type')); ?>
+			</div>
 		</li>
 		
 		<li class="even">

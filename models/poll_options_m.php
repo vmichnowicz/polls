@@ -87,23 +87,26 @@ class Poll_options_m extends MY_Model {
 		// Used for poll option order
 		$count = 0;
 		
-		// For each poll option
-		foreach ($options as $option)
+		if ($options)
 		{
-			// If the option is not blank
-			if ($option != '')
+			// For each poll option
+			foreach ($options as $option)
 			{
-				$data = array(
-					'poll_id' 	=> $poll_id,
-					'type' 		=> $option['type'],
-					'title' 	=> $option['title'],
-					'`order`' 	=> $count
-				);
-				// Insert poll option into the database
-				$this->db->insert('poll_options', $data);
-				
-				// Add +1 to our counter
-				$count++; 
+				// If the option is not blank
+				if ($option != '')
+				{
+					$data = array(
+						'poll_id' 	=> $poll_id,
+						'type' 		=> $option['type'],
+						'title' 	=> $option['title'],
+						'`order`' 	=> $count
+					);
+					// Insert poll option into the database
+					$this->db->insert('poll_options', $data);
+					
+					// Add +1 to our counter
+					$count++; 
+				}
 			}
 		}
 		
@@ -153,20 +156,15 @@ class Poll_options_m extends MY_Model {
 	{
 		$votes = 0;
 		
-		$query = $this->db
-			->select('votes')
-			->where('poll_id', $poll_id)
-			->get('poll_options');
+		$query = $this->db->query("
+			SELECT SUM(votes) AS sum
+			FROM poll_options
+			WHERE poll_id = '$poll_id'
+		");
 		
-		if ($query->num_rows() > 0)
-		{
-			foreach ($query->result() as $row)
-			{
-				$votes = $votes + $row->votes;
-			}
-		}
+		$row = $query->row();
 		
-		return $votes;
+		return $row->sum;
 	}
 	
 	/**
