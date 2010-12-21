@@ -27,6 +27,7 @@ class Poll_options_m extends MY_Model {
 
 		$query = $this->db
 			->where('poll_id', $id)
+			->order_by('`order`', 'asc')
 			->get('poll_options');
 		
 		if ($query->num_rows() > 0)
@@ -83,6 +84,9 @@ class Poll_options_m extends MY_Model {
 	 */
 	public function add($poll_id, $options)
 	{
+		// Used for poll option order
+		$count = 0;
+		
 		// For each poll option
 		foreach ($options as $option)
 		{
@@ -90,12 +94,16 @@ class Poll_options_m extends MY_Model {
 			if ($option != '')
 			{
 				$data = array(
-					'poll_id' => $poll_id,
-					'type' => $option['type'],
-					'title' => $option['title']
+					'poll_id' 	=> $poll_id,
+					'type' 		=> $option['type'],
+					'title' 	=> $option['title'],
+					'`order`' 	=> $count
 				);
 				// Insert poll option into the database
-				$this->db->insert('poll_options', $data); 
+				$this->db->insert('poll_options', $data);
+				
+				// Add +1 to our counter
+				$count++; 
 			}
 		}
 		
@@ -105,10 +113,23 @@ class Poll_options_m extends MY_Model {
 	
 	public function add_single($poll_id, $option_type, $option_title)
 	{
+		
+		$query = $this->db
+			->select('`order`')
+			->where('poll_id', $poll_id)
+			->order_by('`order`', 'desc')
+			->limit(1)
+			->get('poll_options');
+		
+		$row = $query->row();
+		
+		$order = $row->order + 1;
+		
 		$data = array(
-			'poll_id' => $poll_id,
-			'type' => $option_type,
-			'title' => trim($option_title)
+			'poll_id' 	=> $poll_id,
+			'type' 		=> $option_type,
+			'title' 	=> trim($option_title),
+			'`order`' 	=> $order
 		);
 		
 		// Insert poll option into the database
@@ -202,6 +223,45 @@ class Poll_options_m extends MY_Model {
 		
 		return TRUE;
 	}
+	
+	/**
+	 * Update poll option order
+	 *
+	 * @author Victor Michnowicz
+	 * 
+	 * @access public
+	 * 
+	 * @param int 			The ID of the poll
+	 * @param int 			The poll option ID
+	 * @param int 			The poll option order
+	 * 
+	 * @return bool
+	 */
+	public function option_order($poll_id, $poll_option_id, $order)
+	{
+		// Make sure this poll option exists 
+		if ($this->poll_option_exists($poll_id, $poll_option_id))
+		{
+			// Backticks!
+			$data = array(
+				'`order`' => (int)$order
+			);
+			
+			// Update order
+			$this->db
+				->where('id', $poll_option_id)
+				->update('poll_options', $data);
+			
+			
+			// Did this query affect any rows?
+			return $this->db->affected_rows() > 0 ? TRUE : FALSE; 
+		}
+		// If this poll option does not exist
+		else
+		{
+			return FALSE;
+		}
+	} 
 
 	/**
 	 * Update existing poll options (or add a new one if the poll option does not exist)

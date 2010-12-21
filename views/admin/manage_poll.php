@@ -31,15 +31,15 @@
 					A <strong>defined</strong> poll option lets the user vote for a poll option that you specify.
 					An <strong>other</strong> poll options allows the user to enter text into a text input for that particular option.
 				</p>
-				<ul id="options" style="float:left;">
-					<li id="new_option">
-						<select name="new_option_type" id="new_option_type">
-							<option value="defined"><?php echo lang('polls.defined'); ?></option>
-							<option value="other"><?php echo lang('polls.other'); ?></option>
-						</select>
-						<input type="text" name="new_option_title" id="new_option_title" />
-						<input type="button" id="add_new_option" value="Add Option" />
-					</li>
+				<div id="new_option">
+					<select name="new_option_type" id="new_option_type">
+						<option value="defined"><?php echo lang('polls.defined'); ?></option>
+						<option value="other"><?php echo lang('polls.other'); ?></option>
+					</select>
+					<input type="text" name="new_option_title" id="new_option_title" />
+					<input type="button" id="add_new_option" value="Add Option" />
+				</div>
+				<ul id="options" style="float:left;" class="sortable">
 					<?php if ( isset($poll['options']) ): ?>
 						<?php foreach($poll['options'] as $option): ?>
 							<?php if ($option !== ''): ?>

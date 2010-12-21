@@ -1,31 +1,32 @@
 jQuery(document).ready(function($) {
 	
-	var option_focus = false;
-	
-	$('#new_option_title').bind({
-		focusin: function() {
-			option_focus = true;
-			console.log('has focus...');
-		},
-		focusout: function() {
-			option_focus = false;
-			console.log('does not have focus...');
+	// Make options sortable along the "y" axis
+	$('#options').sortable({
+		axis: 'y',
+		update: function() {
+			
+			var poll_id = $('#poll_id').val();
+			var options = $('input[name^="options"]');
+			var obj = new Object();
+			
+			$(options).each(function(i) {
+				var id = $(options).eq(i).attr('name');
+				id = id.replace('options[', '');
+				id = id.replace('][title]', '');
+				
+				obj[id] = i;
+				
+			});
+			
+			$.post(BASE_URL + 'admin/polls/ajax_update_order/' + poll_id, obj, function(data) {
+				// It worked!!!
+			});
+			
 		}
 	});
 	
-	$('#new_option_title').keyup(function(e) {
-		if (e.which == 13) {
-			add_option();
-		}
-	});
-	
-	$('form').submit(function(e) {
-		if (option_focus) {
-			e.preventDefault();
-		}
-	});
-	
-	$('#add_new_option').live('click', function() {
+	// Add a poll option
+	function add_option() {
 		var options = $('#section_options');
 		var poll_id = $('#poll_id').val();
 		var type = $('#new_option_type').val();
@@ -44,49 +45,18 @@ jQuery(document).ready(function($) {
 				
 			});
 		}
-		
-	});
-	
-	function add_option() {
-		var type = $('#new_option_type').val();
-		var title = $('#new_option_title').val();
-		
-		if (title) {
-		
-			var type_input = $('#new_option_type').clone();
-			var title_input = $('#new_option_title').clone();
-			
-			$(type_input).val(type);
-			$(title_input).val(title);
-			
-			$(type_input).attr('name', 'options[' + option_count + '][type]');
-			$(title_input).attr('name', 'options[' + option_count + '][title]');
-			
-			$(type_input).attr('id', '');
-			$(title_input).attr('id', '');
-			
-			var el = $('<li />');
-			
-			$(el).append(type_input)
-			$(el).append(title_input);
-			
-			$('#options').append(el)
-			$(el).hide().slideDown('slow');
-			
-			
-			option_count++;
-			
-			$('#new_option_title').val('');
-		}
 	}
 	
-	var option_count = 0;
-	
-	$('#add_a_new_option').click(function() {
+	// If "Add Option" button is clicked
+	$('#add_new_option').live('click', function() {
 		add_option();
 	});
 	
-	// Datepicker
-	$("#open_date, #close_date").datepicker({ dateFormat: 'yy/m/d' });
-	
+	// If user presses the "enter" key (use "live" because of AJAX DOM replacement)
+	$('#new_option_title').live('keyup', function(e) {
+		if (e.which == 13) {
+			add_option();
+		}
+	});
+
 });

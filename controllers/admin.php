@@ -156,7 +156,8 @@ class Admin extends Admin_Controller {
 		
 		// Load the view
 		$this->template
-			->append_metadata( js('manage.js', 'polls') )
+			->append_metadata( js('admin.js', 'polls') )
+			->append_metadata( js('create.js', 'polls') )
 			->title($this->module_details['name'], lang('polls.new_poll_label'))
 			->build('admin/new_poll', $data);
 	}
@@ -210,7 +211,9 @@ class Admin extends Admin_Controller {
 		
 		// Build that thang
 		$this->template
+			->append_metadata( js('admin.js', 'polls') )
 			->append_metadata( js('manage.js', 'polls') )
+			->append_metadata( css('admin.css', 'polls') )
 			->title($this->module_details['name'], lang('polls.new_poll_label'))
 			->build('admin/manage_poll', $data);
 	}
@@ -365,12 +368,28 @@ class Admin extends Admin_Controller {
 			return TRUE;
 		}
 	}
-
-	public function ajax_update_order()
+	
+	/**
+	 * Update poll option order
+	 *
+	 * @author Victor Michnowicz
+	 * 
+	 * @access public
+	 * 
+	 * @param int 			The ID of the poll
+	 * 
+	 * @return null
+	 */
+	public function ajax_update_order($poll_id)
 	{
-		// This would be cool. Do this.
+		// Make sure we have POST data
+		if (isset($_POST))
+		{
+			foreach($_POST as $id=>$order)
+			{
+				$this->poll_options_m->option_order($poll_id, $id, $order);
+			}
+		}
 	}
-	
-	
 	
 }
