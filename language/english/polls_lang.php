@@ -24,6 +24,7 @@ $lang['polls.id_error']					= 'No IDs have been specified.';
 $lang['polls.no_poll_options_error']	= 'No options exist for this poll';
 $lang['polls.no_polls_error'] 			= 'No polls have been created yet.';
 $lang['polls.install_error']			= 'The module could not be installed.';
+$lang['polls.cookies_required'] 		= 'This poll requires cookies to be enabled in order to vote';
 
 // Polls overview headers
 $lang['polls.title']					= 'Poll Title';

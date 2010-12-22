@@ -11,6 +11,22 @@
 class Poll_voters_m extends MY_Model {
 	
 	/**
+	 * Constructor method
+	 * 
+	 * @author Victor Michnowicz
+	 * @access public
+	 * @return void
+	 */
+	public function __construct()
+	{
+		// Call the parent's constructor
+		parent::__construct();
+		
+		// Config
+		$this->config->load('poll_config');
+	}
+	
+	/**
 	 * Record user details in database
 	 * 
 	 * This allows us to make sure the same user does not vote multiple times in the same poll
@@ -18,7 +34,7 @@ class Poll_voters_m extends MY_Model {
 	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int poll ID
-	 * @return null
+	 * @return void
 	 */		
 	public function record_voter($poll_id)
 	{
@@ -43,6 +59,9 @@ class Poll_voters_m extends MY_Model {
 	 */	
 	public function allready_voted($poll_id)
 	{
+		
+		$expire = time() + $this->config->item('polls.ip_expire');
+		
 		//First, let's see if we can find this poll in the userdata
 		if ( $this->session->userdata('poll_' . $poll_id) )
 		{

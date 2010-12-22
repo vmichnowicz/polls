@@ -78,6 +78,13 @@ class Polls extends Public_Controller {
 			// If the user decided to vote, has not alreay voted in this poll, AND this poll is not members only AND the user is not logged in
 			if ( $this->input->post('vote') AND ! $already_voted AND $members_only_check )
 			{
+				// Make sure current session matches the session ID in the hidden input field
+				// If the user has cookies disabled then the session ID will have changed
+				if ($this->session->userdata('session_id') != $this->input->post('session_id'))
+				{
+					show_error(lang('polls.cookies_required'));
+				}
+				
 				// Grab all votes (or vote)
 				$votes = $this->input->post('vote');
 				
@@ -144,14 +151,14 @@ class Polls extends Public_Controller {
 					}
 					
 					// Add ID to $votes_ids array
-					array_push($votes_ids, $vote['id']);
+					$votes_ids[] = $vote['id'];
 				}
 				
 				// Set session data so this user can not vote again
 				$this->session->set_userdata('poll_' . $poll_id, $votes);
 				
 				// Record user IP and session data in database 
-				$this->poll_votes_m->record_vote($poll_id);
+				$this->poll_voters_m->record_voter($poll_id);
 				
 				// User just voted
 				$already_voted = TRUE;

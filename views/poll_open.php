@@ -37,6 +37,8 @@
 			
 			<hr />
 			
+			<input type="hidden" name="session_id" value="<?php echo $this->session->userdata('session_id'); ?>" />
+			
 			<input type="submit" value="Vote" />
 		</fieldset>
 	</form>
