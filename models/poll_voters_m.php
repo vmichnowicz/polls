@@ -21,9 +21,6 @@ class Poll_voters_m extends MY_Model {
 	{
 		// Call the parent's constructor
 		parent::__construct();
-		
-		// Config
-		$this->config->load('poll_config');
 	}
 	
 	/**
@@ -59,8 +56,9 @@ class Poll_voters_m extends MY_Model {
 	 */	
 	public function allready_voted($poll_id)
 	{
-		
-		$expire = time() + $this->config->item('polls.ip_expire');
+		// IP address are considered unique for one week
+		$expire = 604800;
+		$now = time();
 		
 		//First, let's see if we can find this poll in the userdata
 		if ( $this->session->userdata('poll_' . $poll_id) )
@@ -77,7 +75,11 @@ class Poll_voters_m extends MY_Model {
 			SELECT *
 			FROM poll_voters
 			WHERE poll_id = $poll_id AND
-				(user_id = '$user_id' OR session_id = '$session_id' OR ip_address = '$ip_address') 
+				(
+					user_id = '$user_id' OR
+					session_id = '$session_id' OR
+					(ip_address = '$ip_address' AND timestamp + $expire < $now)
+				)
 		");
 		
 		if ($query->num_rows() > 0)
@@ -88,7 +90,6 @@ class Poll_voters_m extends MY_Model {
 		{
 			return FALSE;
 		}
-		
 	}
 
 }

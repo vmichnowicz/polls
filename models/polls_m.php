@@ -9,7 +9,7 @@
  *
  */
 class Polls_m extends MY_Model {
-
+	
 	/**
 	 * Get all polls
 	 *
@@ -27,13 +27,29 @@ class Polls_m extends MY_Model {
 		{
 			foreach ($query->result() as $row)
    			{
+   				// Is this poll open
+   				$close_date = ( $row->close_date ) ? $row->close_date : time() * 2;
+				$open_date = $row->open_date;
+				
+				// If poll is open
+				if ( $close_date > time() AND $open_date < time() )
+				{
+					$poll_open = TRUE;
+				}
+				// If poll is closed
+				else
+				{
+					$poll_open = FALSE;
+				}
+			
 				$results[] = array(
 					'id' 				=> $row->id,
 					'slug' 				=> $row->slug,
 					'title' 			=> $row->title,
 					'description' 		=> $row->description,
-					'open_date' 		=> $row->open_date,
-					'close_date' 		=> $row->close_date,
+					'open_date' 		=> $open_date,
+					'close_date' 		=> $close_date,
+					'is_open' 			=> $poll_open,
 					'created' 			=> $row->created,
 					'last_updated' 		=> $row->last_updated,
 					'type' 				=> $row->type,
@@ -128,14 +144,30 @@ class Polls_m extends MY_Model {
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row(); 
-
+			
+			// Is this poll open
+			$close_date = ( $row->close_date ) ? $row->close_date : time() * 2;
+			$open_date = $row->open_date;
+			
+			// If poll is open
+			if ( $close_date > time() AND $open_date < time() )
+			{
+				$poll_open = TRUE;
+			}
+			// If poll is closed
+			else
+			{
+				$poll_open = FALSE;
+			}
+			
 			$data = array(
 				'id' 				=> $row->id,
 				'slug' 				=> $row->slug,
 				'title' 			=> $row->title,
 				'description' 		=> $row->description,
-				'open_date' 		=> $row->open_date,
-				'close_date' 		=> $row->close_date,
+				'open_date' 		=> $open_date,
+				'close_date' 		=> $close_date,
+				'is_open' 			=> $poll_open,
 				'type' 				=> $row->type,
 				'created' 			=> $row->created,
 				'comments_enabled' 	=> (bool)$row->comments_enabled,

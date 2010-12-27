@@ -1,12 +1,12 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 
 class Widget_Polls extends Widgets {
 	
 	public $title = 'Poll Widget';
-	public $description = 'Display some polls.';
+	public $description = 'Display a poll.';
 	public $author = 'Victor Michnowicz';
 	public $website = 'http://www.vmichnowicz.com/';
-	public $version = '0.1';
+	public $version = '0.2';
 	
 	public $fields = array(
 		array(
@@ -16,72 +16,46 @@ class Widget_Polls extends Widgets {
 		)
 	);
 	
+	public function __construct()
+	{
+		// Load models
+		$this->load->model('modules/module_m');
+		$this->load->model('polls/polls_m');
+		$this->load->model('polls/poll_options_m');
+		$this->load->model('polls/poll_voters_m');
+	}
+	
 	public function run($options)
 	{
+		// Get poll ID
 		$poll_id = $options['poll_id'];
 		
-		$query = $this->db->where('id', $poll_id)->limit(1)->get('polls');
+		// Get poll data
+		$data = $this->polls_m->get_poll_by_id($poll_id);
 		
-		$row = $query->row(); 
-		
-		$data = array(
-			'slug' => $row->slug,
-			'title' => $row->title,
-			'description' => $row->description,
-			'open_date' => $row->open_date,
-			'close_date' => $row->close_date,
-			'created' => $row->created
-		);
+		// Has user alread voted in this poll?
+		$data['allready_voted'] = $this->poll_voters_m->allready_voted($poll_id);
 		
 		// Get options
+		$data['options'] = $this->poll_options_m->get_all_where_poll_id($poll_id);
 		
-		$query = $this->db->where('poll_id', $poll_id)->order_by('`order`', 'asc')->get('poll_options');
+		$dater['poll_options'] = array(
+			0=>2,
+			1=>3
+		); //$this->poll_options_m->get_all_where_poll_id($poll_id);
 		
-		$options = array();
-		$votes = 0;
-		
-		if ($query->num_rows() > 0)
-		{
-			foreach ($query->result() as $row)
-			{
-				$options[] = array(
-					'id' => $row->id,
-					'type' 	=> $row->type,
-					'title' 	=> $row->title,
-					'votes' 	=> $row->votes
-				);
-			}
-		}
-		
-		$query = $this->db->query("SELECT SUM(votes) AS sum FROM poll_options WHERE poll_id = '$poll_id'");
-		
-		$row = $query->row();
-		
-		$data['total_votes'] = $row->sum;
-		
-		$data['options'] = $options;
+		// Get total votes
+		$data['total_votes'] = $this->poll_options_m->get_total_votes($poll_id);
 		
 		// Send data
-		return array('data' => $data);
+		//return array('data' => $data);
+		return $dater;
 	}
 	
 	public function form()
 	{
 		// Get all polls
-		$query = $this->db->get('polls');
-		
-		// Our polls array
-		$polls = array();
-		
-		// Get query results
-		if ($query->num_rows() > 0)
-		{
-			foreach ($query->result() as $row)
-			{
-				$polls[$row->id] = $row->title;
-			}
-		}
-		
+		$polls = $this->polls_m->get_all();
 		return array('polls' => $polls);
 	}
 	
