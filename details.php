@@ -2,7 +2,7 @@
 
 class Module_Polls extends Module {
 
-	public $version = '0.4';
+	public $version = '0.5';
 
 	public function info()
 	{
@@ -65,7 +65,7 @@ class Module_Polls extends Module {
 			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 		");
 		
-		// Create poll_votes table
+		// Create poll_voters table
 		$this->db->query("
 			CREATE TABLE IF NOT EXISTS `poll_voters` (
 			`id` mediumint(32) unsigned NOT NULL AUTO_INCREMENT,
@@ -115,13 +115,71 @@ class Module_Polls extends Module {
 	public function uninstall()
 	{
 		// Drop some tables
-		$this->db->query("DROP TABLE `poll_other_votes`, `poll_options`, `polls`");
+		$this->db->query("DROP TABLE `poll_voters`, `poll_other_votes`, `poll_options`, `polls`");
 		return TRUE;
 	}
 
 	public function upgrade($old_version)
 	{
-		// Add this to my to-do list...
+		// Version 0.4 (the first official release)
+		if ($old_version == '0.4')
+		{
+			// Update polls table
+			$this->db->query("
+				ALTER TABLE  `polls` ADD  `type` enum('single','multiple') NOT NULL DEFAULT 'single'
+			");
+			
+			// Update poll_options table
+			$this->db->query("
+				ALTER TABLE  `poll_options` ADD  `type` enum('defined','other') NOT NULL DEFAULT 'defined'
+			");
+			
+			// Add poll_other_votes table
+			$this->db->query("
+				CREATE TABLE IF NOT EXISTS `poll_other_votes` (
+				`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+				`parent_id` smallint(11) unsigned NOT NULL,
+				`text` tinytext NOT NULL,
+				`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				PRIMARY KEY (`id`),
+				KEY `parent_id` (`parent_id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+			");
+		
+			// Add poll_voters table
+			$this->db->query("
+				CREATE TABLE IF NOT EXISTS `poll_voters` (
+				`id` mediumint(32) unsigned NOT NULL AUTO_INCREMENT,
+				`poll_id` tinyint(11) unsigned NOT NULL,
+				`user_id` smallint(5) unsigned DEFAULT NULL,
+				`session_id` varchar(40) NOT NULL,
+				`ip_address` varchar(16) NOT NULL,
+				`timestamp` int(11) unsigned NOT NULL,
+				PRIMARY KEY (`id`),
+				KEY `poll_id` (`poll_id`),
+				KEY `user_id` (`user_id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+			");
+			
+			// Referental integrity fo' sho
+			$this->db->query("
+				ALTER TABLE `poll_other_votes`
+				ADD CONSTRAINT `poll_other_votes_ibfk_1`
+				FOREIGN KEY (`parent_id`)
+				REFERENCES `poll_options` (`id`)
+				ON DELETE CASCADE
+				ON UPDATE CASCADE;
+			");
+			
+			$this->db->query("
+				ALTER TABLE `poll_voters`
+				ADD CONSTRAINT `poll_votes_ibfk_1`
+				FOREIGN KEY (`poll_id`)
+				REFERENCES `polls` (`id`)
+				ON DELETE CASCADE
+				ON UPDATE CASCADE;
+			");
+		}
 		return TRUE;
 	}
 
