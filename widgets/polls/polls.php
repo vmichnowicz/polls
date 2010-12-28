@@ -34,22 +34,16 @@ class Widget_Polls extends Widgets {
 		$data = $this->polls_m->get_poll_by_id($poll_id);
 		
 		// Has user alread voted in this poll?
-		$data['allready_voted'] = $this->poll_voters_m->allready_voted($poll_id);
+		$data['already_voted'] = $this->poll_voters_m->already_voted($poll_id);
 		
 		// Get options
-		$data['options'] = $this->poll_options_m->get_all_where_poll_id($poll_id);
-		
-		$dater['poll_options'] = array(
-			0=>2,
-			1=>3
-		); //$this->poll_options_m->get_all_where_poll_id($poll_id);
+		$data['poll_options'] = $this->poll_options_m->get_all_where_poll_id($poll_id);
 		
 		// Get total votes
 		$data['total_votes'] = $this->poll_options_m->get_total_votes($poll_id);
 		
 		// Send data
-		//return array('data' => $data);
-		return $dater;
+		return $data;
 	}
 	
 	public function form()

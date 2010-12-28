@@ -47,14 +47,14 @@ class Poll_voters_m extends MY_Model {
 	}
 	
 	/**
-	 * Has a user already voted in this poll?
+	 * Has current user already voted in this poll?
 	 *
 	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int poll ID
 	 * @return null
 	 */	
-	public function allready_voted($poll_id)
+	public function already_voted($poll_id)
 	{
 		// IP address are considered unique for one week
 		$expire = 604800;
@@ -71,6 +71,14 @@ class Poll_voters_m extends MY_Model {
 		$ip_address = $this->session->userdata('ip_address');
 		$current_time = time();
 		
+		/*
+		 * Get all poll voters that have voted in a particular poll
+		 * 
+		 * Where the user ID is the same as the current user -OR-
+		 * The session ID is the same as the current user -OR-
+		 * The IP address is the same as the current user (but assume that an IP is unique to a user for only one week)
+		 * 
+		 */
 		$query = $this->db->query("
 			SELECT *
 			FROM poll_voters
