@@ -1,11 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- *
  * Create totally awesome polls.
  *
- * @author 	Victor Michnowicz
- * @category 	Modules
+ * @author Victor Michnowicz
+ * @category Modules
  *
  */
 class Poll_options_m extends MY_Model {
@@ -14,11 +13,8 @@ class Poll_options_m extends MY_Model {
 	 * Get all poll options with the poll ID that is passed in
 	 *
 	 * @author Victor Michnowicz
-	 * 
 	 * @access public
-	 * 
 	 * @param int 			ID of the poll
-	 * 
 	 * @return mixed
 	 */
 	public function get_all_where_poll_id($id)
@@ -46,8 +42,8 @@ class Poll_options_m extends MY_Model {
 					foreach ($q->result() as $r)
 					{
 						$other[$r->id] = array(
-							'id' 	=> $r->id,
-							'text' => htmlentities($r->text, ENT_QUOTES), // Convert all applicable characters to HTML entities
+							'id' => $r->id,
+							'text' => htmlentities($r->text, ENT_QUOTES, 'UTF-8'), // Convert all applicable characters to HTML entities
 							'created' => strtotime($r->created)
 						);
 					}
@@ -74,12 +70,9 @@ class Poll_options_m extends MY_Model {
 	 * Insert new poll options into the database
 	 *
 	 * @author Victor
-	 * 
 	 * @access public
-	 * 
 	 * @param int 			ID of the poll
 	 * @param array 		The poll option data to insert
-	 * 
 	 * @return bool
 	 */
 	public function add($poll_id, $options)
@@ -87,33 +80,46 @@ class Poll_options_m extends MY_Model {
 		// Used for poll option order
 		$count = 0;
 		
-		if ($options)
+		$this->db->trans_start();
+
+		// For each poll option
+		foreach ($options as $option)
 		{
-			// For each poll option
-			foreach ($options as $option)
+			// If the option is not blank
+			if ($option != '')
 			{
-				// If the option is not blank
-				if ($option != '')
-				{
-					$data = array(
-						'poll_id' 	=> $poll_id,
-						'type' 		=> $option['type'],
-						'title' 	=> $option['title'],
-						'`order`' 	=> $count
-					);
-					// Insert poll option into the database
-					$this->db->insert('poll_options', $data);
-					
-					// Add +1 to our counter
-					$count++; 
-				}
+				$data = array(
+					'poll_id' 	=> $poll_id,
+					'type' 		=> $option['type'],
+					'title' 	=> $option['title'],
+					'`order`' 	=> $count
+				);
+				// Insert poll option into the database
+				$this->db->insert('poll_options', $data);
+
+				// Add +1 to our counter
+				$count++;
 			}
 		}
+
+		$this->db->trans_complete();
 		
-		return TRUE;
+		return $this->db->trans_status() ? TRUE : FALSE;
 
 	}
-	
+
+	/**
+	 * Add a single poll option
+	 *
+	 * Used on poll modification page with ajax_add_option() method
+	 *
+	 * @author Victor
+	 * @access public
+	 * @param int 			ID of the poll
+	 * @param string		Option type ("defined" or "other")
+	 * @param string		Option title
+	 * @return int
+	 */
 	public function add_single($poll_id, $option_type, $option_title)
 	{
 		
@@ -137,19 +143,16 @@ class Poll_options_m extends MY_Model {
 		
 		// Insert poll option into the database
 		$this->db->insert('poll_options', $data); 
-		
-		return TRUE;
+
+		return $this->db->affected_rows() > 0 ? TRUE : FALSE;
 	}
 	
 	/**
 	 * Get the total number of votes for a given poll
 	 *
 	 * @author Victor
-	 * 
 	 * @access public
-	 * 
 	 * @param int 			ID of the poll
-	 * 
 	 * @return int
 	 */	
 	public function get_total_votes($poll_id)
@@ -171,12 +174,9 @@ class Poll_options_m extends MY_Model {
 	 * Check to see if a poll options exists
 	 *
 	 * @author Victor Michnowicz
-	 * 
 	 * @access public
-	 * 
 	 * @param int 			The ID of the poll
 	 * @param array 		The ID of the poll option
-	 * 
 	 * @return bool
 	 */	
 	public function poll_option_exists($poll_id, $poll_option_id)
@@ -195,18 +195,19 @@ class Poll_options_m extends MY_Model {
 	 * Record a vote for a given poll option
 	 *
 	 * @author Victor Michnowicz
-	 * 
 	 * @access public
-	 * 
 	 * @param int 			The ID of the poll option
 	 * @param string 		The "other" vote text (optional)
-	 * 
 	 * @return bool
 	 */	
 	public function record_vote($poll_option_id, $poll_other_vote = NULL)
 	{
-		
-		$this->db->query("UPDATE poll_options SET votes = votes +1 WHERE id = $poll_option_id");
+		$this->db->trans_start();
+
+		$this->db
+			->set('votes', 'votes + 1', FALSE)
+			->where('id', $poll_option_id)
+			->update('poll_options');
 		
 		// If an "other" poll option was specified
 		if ($poll_other_vote)
@@ -219,20 +220,19 @@ class Poll_options_m extends MY_Model {
 			$this->db->insert('poll_other_votes', $data);
 		}
 		
-		return TRUE;
+		$this->db->trans_complete();
+
+		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 	
 	/**
 	 * Update poll option order
 	 *
 	 * @author Victor Michnowicz
-	 * 
 	 * @access public
-	 * 
 	 * @param int 			The ID of the poll
 	 * @param int 			The poll option ID
 	 * @param int 			The poll option order
-	 * 
 	 * @return bool
 	 */
 	public function option_order($poll_id, $poll_option_id, $order)
@@ -240,7 +240,6 @@ class Poll_options_m extends MY_Model {
 		// Make sure this poll option exists 
 		if ($this->poll_option_exists($poll_id, $poll_option_id))
 		{
-			// Backticks!
 			$data = array(
 				'`order`' => (int)$order
 			);
@@ -265,16 +264,15 @@ class Poll_options_m extends MY_Model {
 	 * Update existing poll options (or add a new one if the poll option does not exist)
 	 *
 	 * @author Victor Michnowicz
-	 * 
 	 * @access public
-	 * 
 	 * @param int 			The ID of the poll
 	 * @param array 		The data to use for updating the DB record
-	 * 
 	 * @return bool
 	 */
 	public function update($poll_id, $input)
 	{
+		$this->db->trans_start();
+
 		foreach ( $input as $option_id => $option )
 		{
 			// Get the option title
@@ -323,7 +321,9 @@ class Poll_options_m extends MY_Model {
 			
 		}
 		
-		return TRUE;
+		$this->db->trans_complete();
+
+		return $this->db->trans_status() ? TRUE : FALSE;
 
 	}
 

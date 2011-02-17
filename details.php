@@ -185,8 +185,7 @@ class Module_Polls extends Module {
 
 	public function help()
 	{
-		// This also...
-		return "Some Help Stuff";
+		return '<a href="https://github.com/vmichnowicz/polls">View Source on Github</a>';
 	}
 }
 /* End of file details.php */

@@ -1,11 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- *
  * Create totally awesome polls.
  *
- * @author 		Victor Michnowicz
- * @category 	Modules
+ * @author Victor Michnowicz
+ * @category Modules
  *
  */
 class Polls extends Public_Controller {
@@ -14,7 +13,6 @@ class Polls extends Public_Controller {
 	 * Constructor method
 	 *
 	 * @access public
-	 * 
 	 * @return void
 	 */
 	public function __construct()
@@ -34,7 +32,6 @@ class Polls extends Public_Controller {
 	 * Index method
 	 *
 	 * @access public
-	 * 
 	 * @return void
 	 */
 	public function index()
@@ -50,9 +47,7 @@ class Polls extends Public_Controller {
 	 * View a single poll
 	 *
 	 * @author Victor Michnowicz
-	 * 
 	 * @access public
-	 * 
 	 * @param string 			The slug of the poll
 	 * @param bool 				Force showing of results
 	 */
@@ -243,11 +238,8 @@ class Polls extends Public_Controller {
 	 * Show poll results
 	 *
 	 * @author Victor MichnUNowicz
-	 * 
 	 * @access public
-	 * 
 	 * @param string 			The slug of the poll
-	 * @param bool 				Force showing of results
 	 */
 	function results($slug = NULL)
 	{

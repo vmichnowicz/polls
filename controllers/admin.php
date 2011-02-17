@@ -1,12 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- *
  * Create totally awesome polls.
  *
  * @author 	Victor Michnowicz
  * @category 	Modules
- *
  */
 class Admin extends Admin_Controller {
 
@@ -156,6 +154,7 @@ class Admin extends Admin_Controller {
 		
 		// Load the view
 		$this->template
+			->append_metadata( $this->load->view('fragments/wysiwyg', $this->data, TRUE) )
 			->append_metadata( js('admin.js', 'polls') )
 			->append_metadata( js('create.js', 'polls') )
 			->title($this->module_details['name'], lang('polls.new_poll_label'))
@@ -197,7 +196,6 @@ class Admin extends Admin_Controller {
 			{
 				$this->session->set_flashdata('success', lang('polls.update_success'));
 				redirect('admin/polls/manage/' . $id);	
-				
 			}
 			
 			// That update did not go well
@@ -211,6 +209,7 @@ class Admin extends Admin_Controller {
 		
 		// Build that thang
 		$this->template
+			->append_metadata( $this->load->view('fragments/wysiwyg', $this->data, TRUE) )
 			->append_metadata( js('admin.js', 'polls') )
 			->append_metadata( js('manage.js', 'polls') )
 			->append_metadata( css('admin.css', 'polls') )
@@ -266,7 +265,6 @@ class Admin extends Admin_Controller {
 	 */
 	public function delete($id = NULL)
 	{
-		
 		$id_array = array();
 
 		// Multiple IDs or just a single one?
@@ -298,7 +296,6 @@ class Admin extends Admin_Controller {
 			// Does the poll exist?
 			if ($poll)
 			{
-
 				// Delete this poll
 				if (!$this->polls_m->delete($id) )
 				{
@@ -351,12 +348,8 @@ class Admin extends Admin_Controller {
 	 * Add a poll option
 	 *
 	 * @author Victor Michnowicz
-	 * 
 	 * @access public
-	 * 
-	 * @param string YYYY/MM/DD date string
-	 * 
-	 * @return string
+	 * @return bool
 	 */
 	public function ajax_add_option()
 	{
@@ -364,21 +357,15 @@ class Admin extends Admin_Controller {
 		$option_type = $this->input->post('new_option_type');
 		$option_title = $this->input->post('new_option_title');
 		
-		if ($this->poll_options_m->add_single($poll_id, $option_type, $option_title))
-		{
-			return TRUE;
-		}
+		return $this->poll_options_m->add_single($poll_id, $option_type, $option_title);
 	}
 	
 	/**
 	 * Update poll option order
 	 *
 	 * @author Victor Michnowicz
-	 * 
 	 * @access public
-	 * 
 	 * @param int 			The ID of the poll
-	 * 
 	 * @return null
 	 */
 	public function ajax_update_order($poll_id)

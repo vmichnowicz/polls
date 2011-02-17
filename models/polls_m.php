@@ -1,12 +1,10 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
+ * Add, edit, delete, and update polls
  *
- * The galleries module enables users to create albums, upload photos and manage their existing albums.
- *
- * @author 	Victor Michnowicz
- * @category 	Modules
- *
+ * @author Victor Michnowicz
+ * @category Modules
  */
 class Polls_m extends MY_Model {
 	
@@ -27,12 +25,8 @@ class Polls_m extends MY_Model {
 		{
 			foreach ($query->result() as $row)
    			{
-   				// Is this poll open
-   				$close_date = ( $row->close_date ) ? $row->close_date : time() * 2;
-				$open_date = $row->open_date;
-				
-				// If poll is open
-				if ( $close_date > time() AND $open_date < time() )
+				// If poll has a close date and is currently open
+				if ( $row->close_date AND ( $row->close_date > time() AND $row->open_date < time() ) )
 				{
 					$poll_open = TRUE;
 				}
@@ -47,14 +41,14 @@ class Polls_m extends MY_Model {
 					'slug' 				=> $row->slug,
 					'title' 			=> $row->title,
 					'description' 		=> $row->description,
-					'open_date' 		=> $open_date,
-					'close_date' 		=> $close_date,
+					'open_date' 		=> $row->open_date,
+					'close_date' 		=> $row->close_date,
 					'is_open' 			=> $poll_open,
 					'created' 			=> $row->created,
 					'last_updated' 		=> $row->last_updated,
 					'type' 				=> $row->type,
-					'comments_enabled' 	=> $row->comments_enabled,
-					'members_only' 		=> $row->members_only
+					'comments_enabled' 	=> (bool)$row->comments_enabled,
+					'members_only' 		=> (bool)$row->members_only
 				);
 			}
 			
@@ -75,7 +69,7 @@ class Polls_m extends MY_Model {
 	 * @return bool
 	 */	
 	public function poll_exists($id)
-	{	
+	{
 		$this->db
 			->select('id')
 			->from('polls')
@@ -109,7 +103,7 @@ class Polls_m extends MY_Model {
 			->from('polls')
 			->where('slug', $slug)
 			->limit(1);
-			
+		
 		$query = $this->db->get();
 
 		if ($query->num_rows() > 0)
@@ -132,25 +126,19 @@ class Polls_m extends MY_Model {
 	 * @return mixed
 	 */
 	public function get_poll_by_id($id)
-	{	
-		$this->db
-			->select('*')
-			->from('polls')
+	{
+
+		$query = $this->db
 			->where('id', $id)
-			->limit(1);
-		
-		$query = $this->db->get();
+			->limit(1)
+			->get('polls');
 		
 		if ($query->num_rows() > 0)
 		{
 			$row = $query->row(); 
 			
-			// Is this poll open
-			$close_date = ( $row->close_date ) ? $row->close_date : time() * 2;
-			$open_date = $row->open_date;
-			
-			// If poll is open
-			if ( $close_date > time() AND $open_date < time() )
+			// If poll has a close date and is currently open
+			if ( $row->close_date AND ( $row->close_date > time() AND $row->open_date < time() ) )
 			{
 				$poll_open = TRUE;
 			}
@@ -165,8 +153,8 @@ class Polls_m extends MY_Model {
 				'slug' 				=> $row->slug,
 				'title' 			=> $row->title,
 				'description' 		=> $row->description,
-				'open_date' 		=> $open_date,
-				'close_date' 		=> $close_date,
+				'open_date' 		=> $row->open_date,
+				'close_date' 		=> $row->close_date,
 				'is_open' 			=> $poll_open,
 				'type' 				=> $row->type,
 				'created' 			=> $row->created,
@@ -196,19 +184,18 @@ class Polls_m extends MY_Model {
 			'title' 			=> $input['title'],
 			'slug' 				=> $input['slug'],
 			'description' 		=> $input['description'],
-			'open_date' 		=> (int)date_to_timestamp($input['open_date']),
-			'close_date' 		=> (int)date_to_timestamp($input['close_date']),
+			'open_date' 		=> date_to_timestamp($input['open_date']),
+			'close_date' 		=> date_to_timestamp($input['close_date']),
 			'type' 				=> $input['type'],
-			'comments_enabled' 	=> (int)$input['comments_enabled'],
-			'members_only' 		=> (int)$input['members_only'],
+			'comments_enabled' 	=> (bool)$input['comments_enabled'],
+			'members_only' 		=> (bool)$input['members_only'],
 			'created' 			=> time()
 		);
 		
 		// Insert that data
 		$this->db->insert('polls', $data);
 		
-		return TRUE;
-
+		return $this->db->affected_rows() > 0 ? TRUE : FALSE;
 	}
 	
 	/**
@@ -226,7 +213,7 @@ class Polls_m extends MY_Model {
 			->where('id', $id)
 			->delete();
 			
-		return TRUE;
+		return $this->db->affected_rows() > 0 ? TRUE : FALSE;
 	}
 
 	/**
@@ -245,11 +232,11 @@ class Polls_m extends MY_Model {
 			'title' 			=> $input['title'],
 			'slug' 				=> $input['slug'],
 			'description' 		=> $input['description'],
-			'open_date' 		=> (int)date_to_timestamp($input['open_date']),
-			'close_date' 		=> (int)date_to_timestamp($input['close_date']),
+			'open_date' 		=> date_to_timestamp($input['open_date']),
+			'close_date' 		=> date_to_timestamp($input['close_date']),
 			'type' 				=> $input['type'],
-			'comments_enabled' 	=> (int)$input['comments_enabled'],
-			'members_only' 		=> (int)$input['members_only'],
+			'comments_enabled' 	=> (bool)$input['comments_enabled'],
+			'members_only' 		=> (bool)$input['members_only'],
 			'last_updated' 		=> time()
 		);
 		
@@ -258,7 +245,7 @@ class Polls_m extends MY_Model {
 			->where('id', $id)
 			->update('polls', $data);
 		
-		return TRUE;
+		return $this->db->affected_rows() > 0 ? TRUE : FALSE;
 	}
 
 }

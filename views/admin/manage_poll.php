@@ -18,7 +18,7 @@
 		</li>
 
 		<li class="odd description">
-			<label for="description"><?php echo lang('polls.description_label'); ?></label>
+			<label for="description" style="float: none; clear: both;"><?php echo lang('polls.description_label'); ?></label>
 			<?php echo form_textarea(array('id'=>'description', 'name'=>'description', 'value' => $poll['description'], 'rows' => 10, 'class' => 'wysiwyg-simple')); ?>
 		</li>
 

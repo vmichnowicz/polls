@@ -1,11 +1,10 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- *
  * Poll voters model
  *
- * @author 			Victor Michnowicz
- * @category 		Modules
+ * @author Victor Michnowicz
+ * @category Modules
  *
  */
 class Poll_voters_m extends MY_Model {
@@ -60,7 +59,7 @@ class Poll_voters_m extends MY_Model {
 		$expire = 604800;
 		$now = time();
 		
-		//First, let's see if we can find this poll in the userdata
+		// First, let's see if we can find this poll in the userdata
 		if ( $this->session->userdata('poll_' . $poll_id) )
 		{
 			return TRUE;
@@ -77,7 +76,6 @@ class Poll_voters_m extends MY_Model {
 		 * Where the user ID is the same as the current user -OR-
 		 * The session ID is the same as the current user -OR-
 		 * The IP address is the same as the current user (but assume that an IP is unique to a user for only one week)
-		 * 
 		 */
 		$query = $this->db->query("
 			SELECT *
