@@ -19,6 +19,7 @@ Change List
 ================================
 
 **Polls version 0.5**
+
 * Fixed UTF-8 bug
 * Cleaned up some code
 * Added transaction support
