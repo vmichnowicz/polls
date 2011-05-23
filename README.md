@@ -20,6 +20,7 @@ Change List
 
 **Polls version 0.5**
 
+* Only works with PyroCMS version 1.1
 * Fixed UTF-8 bug
 * Cleaned up some code
 * Added transaction support
