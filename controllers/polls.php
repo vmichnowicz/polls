@@ -39,6 +39,7 @@ class Polls extends Public_Controller {
 		$data['polls'] = $this->polls_m->get_all();
 		$this->template
 			->title('polls')
+			->set_breadcrumb( lang('polls.polls'))
 			->append_metadata( css('polls.css', 'polls') )
 			->build('index', $data);
 	}
