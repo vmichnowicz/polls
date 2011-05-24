@@ -18,6 +18,10 @@ limitations under the License.
 Change List
 ================================
 
+**Polls version 0.5.1**
+
+* Now works with PyroCMS version 1.2
+
 **Polls version 0.5**
 
 * Only works with PyroCMS version 1.1
