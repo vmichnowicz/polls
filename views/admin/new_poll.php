@@ -65,21 +65,26 @@
 		</li>
 		
 		<li class="even">
+			<label for="multiple_votes"><?php echo lang('polls.multiple_votes_label'); ?></label>
+			<?php echo form_dropdown('multiple_votes', array('0'=>lang('polls.no'), '1'=>lang('polls.yes')), set_value('multiple_votes')); ?>
+		</li>
+		
+		<li class="odd">
 			<label for="open_date"><?php echo lang('polls.open_date_label'); ?></label>
 			<?php echo form_input('open_date', set_value('open_date'), 'id="open_date"'); ?>
 		</li>
 
-		<li class="odd">
+		<li class="even">
 			<label for="close_date"><?php echo lang('polls.close_date_label'); ?></label>
 			<?php echo form_input('close_date', set_value('close_date'), 'id="close_date"'); ?>
 		</li>
 
-		<li class="even">
+		<li class="odd">
 			<label for="comments"><?php echo lang('polls.comments_label'); ?></label>
 			<?php echo form_dropdown('comments_enabled', array('1'=>lang('polls.yes'), '0'=>lang('polls.no')), set_value('comments_enabled')); ?>
 		</li>
 
-		<li class="odd">
+		<li class="even">
 			<label for="members_only"><?php echo lang('polls.members_only_label'); ?></label>
 			<?php echo form_dropdown('members_only', array('1'=>lang('polls.yes'), '0'=>lang('polls.no')), set_value('members_only')); ?>
 		</li>
