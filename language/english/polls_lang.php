@@ -44,6 +44,7 @@ $lang['polls.slug_label']				= 'Slug';
 $lang['polls.type_label']				= 'Type';
 $lang['polls.description_label']		= 'Poll Description';
 $lang['polls.options_label']			= 'Poll Options';
+$lang['polls.multiple_votes_label']		= 'Multiple Votes';
 $lang['polls.open_date_label']			= 'Open Date (YYYY/MM/DD)';
 $lang['polls.close_date_label']			= 'Close Date (YYYY/MM/DD)';
 $lang['polls.comments_label']			= 'Enable Comments';
