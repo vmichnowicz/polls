@@ -8,7 +8,10 @@
  *
  */
 class Polls extends Public_Controller {
-
+	
+	public $already_voted;
+	public $poll_open;
+	
 	/**
 	 * Constructor method
 	 *
@@ -45,6 +48,58 @@ class Polls extends Public_Controller {
 	}
 	
 	/**
+	 * See if a poll is open
+	 *
+	 * @access private
+	 * @param int			Open date
+	 * @param int			Close date
+	 * @return bool
+	 */
+	private function poll_open($open_date = NULL, $close_date = NULL)
+	{
+		$close_date = $close_date ? $close_date : time() * 2;
+
+		return ( $close_date > time() AND $open_date < time() ) ? TRUE : FALSE;
+	}
+
+	/**
+	 * See if the current user is allowed to vote in a provided poll
+	 *
+	 * @access private
+	 * @param array			Poll data array
+	 * @return bool
+	 */
+	private function can_vote($data)
+	{
+		// Is this poll only for logged in members?
+		$members_only = $data['members_only'];
+		
+		// If this poll is for members only and the user is not a member
+		if ( $members_only AND !$this->ion_auth->logged_in() )
+		{
+			return FALSE;
+		}
+		
+		// If this poll is not open?
+		if ( ! $this->poll_open($data['open_date'], $data['close_date']) )
+		{
+			return FALSE;
+		}
+		
+		// Has the user already voted in this poll?
+		$this->already_voted = $this->poll_voters_m->already_voted($data['id']);
+		
+		// If this poll does not allow multiple votes
+		if ( $this->already_voted AND !$data['multiple_votes'] )
+		{
+			return FALSE;
+		}
+
+		// We are good!
+		return TRUE;
+	}
+	
+	/**
 	 * View a single poll
 	 *
 	 * @author Victor Michnowicz
@@ -54,7 +109,6 @@ class Polls extends Public_Controller {
 	 */
 	public function poll($slug = NULL, $show_results = FALSE)
 	{
-	
 		// Get poll ID from the provided slug
 		$poll_id = $this->polls_m->get_poll_id_from_slug($slug);
 		
@@ -63,16 +117,12 @@ class Polls extends Public_Controller {
 		{
 			// Get the data for this particular poll
 			$data['poll'] = $this->polls_m->get_poll_by_id($poll_id);
+
+			// Can this user vote?
+			$can_vote = $this->can_vote($data['poll']);
 			
-			// Is this poll only for logged in members?
-			$members_only = $data['poll']['members_only'];
-			$members_only_check = ( $members_only AND !$this->ion_auth->logged_in() ) ? FALSE : TRUE;
-			
-			// Are we sure the user has not already voted in this poll?
-			$already_voted = $this->poll_voters_m->already_voted($poll_id);
-			
-			// If the user decided to vote, has not alreay voted in this poll, AND this poll is not members only AND the user is not logged in
-			if ( $this->input->post('vote') AND ! $already_voted AND $members_only_check )
+			// If the user decided to vote, and can vote
+			if ( $this->input->post('vote') AND $can_vote )
 			{
 				// Make sure current session matches the session ID in the hidden input field
 				// If the user has cookies disabled then the session ID will have changed
@@ -158,6 +208,9 @@ class Polls extends Public_Controller {
 				
 				// User just voted
 				$already_voted = TRUE;
+				
+				// Redirect user to results
+				redirect('polls/results/' . $data['poll']['slug']);
 			}
 			
 			// Get poll options and votes
@@ -180,25 +233,12 @@ class Polls extends Public_Controller {
 					}
 				}
 			}
-		
-			// Is this poll open?
-			$close_date = ( $data['poll']['close_date'] ) ? $data['poll']['close_date'] : time() * 2;
-			$open_date = $data['poll']['open_date'];
-			
-			if ( $close_date > time() AND $open_date < time() )
-			{
-				$poll_open = TRUE;
-			}
-			else
-			{
-				$poll_open = FALSE;
-			}
 			
 			// Do we want comments?
 			$data['comments_enabled'] = ( $data['poll']['comments_enabled'] == 1 ) ? TRUE : FALSE;
 		
-			// If this poll is currently open AND the user has not already voted for this poll AND show_results is still FALSE AND the member check passes
-			if ( $poll_open AND !$already_voted AND !$show_results AND $members_only_check)
+			// If this user can vote and we are not forcing results
+			if ($can_vote AND !$show_results)
 			{
 				$this->template
 					->title($data['poll']['title'])
@@ -208,7 +248,7 @@ class Polls extends Public_Controller {
 					->build('poll_open', $data);
 			}
 		
-			// This poll is closed, the user has already voted in it, or show_results is now TRUE
+			// The user can not vote in the poll or show_results is now TRUE
 			else
 			{
 				if ($show_results)
@@ -224,7 +264,7 @@ class Polls extends Public_Controller {
 				{
 					redirect('polls/results/' . $slug);
 				}
-			}	
+			}
 			
 		}
 		// If this poll does not exist, show 404
