@@ -7,8 +7,6 @@ $lang['polls.polls']	 				= 'Polls';
 $lang['polls.list_label'] 				= 'List Polls';
 $lang['polls.new_poll_label']			= 'Create a new poll';
 
-//$lang['polls.manage_poll_label']		= 'Manage poll';
-
 // Success notifications
 $lang['polls.create_success'] 			= 'Poll created successfully.';
 $lang['polls.update_success'] 			= 'The poll has been successfully updated.';
@@ -24,7 +22,7 @@ $lang['polls.id_error']					= 'No IDs have been specified.';
 $lang['polls.no_poll_options_error']	= 'No options exist for this poll';
 $lang['polls.no_polls_error'] 			= 'No polls have been created yet.';
 $lang['polls.install_error']			= 'The module could not be installed.';
-$lang['polls.cookies_required'] 		= 'This poll requires cookies to be enabled in order to vote';
+$lang['polls.cookies_required'] 		= 'This poll requires cookies to be enabled in order to vote.';
 
 // Polls overview headers
 $lang['polls.title']					= 'Poll Title';
@@ -52,8 +50,8 @@ $lang['polls.comments_label']			= 'Enable Comments';
 $lang['polls.members_only_label']		= 'Members Only';
 
 // Poll creation and modification info
-$lang['polls.options_info'] 			= "A poll option can either be <strong>defined</strong> or <strong>other</strong>. A <strong>defined</strong> poll option lets the user vote for a poll option that you specify. An <strong>other</strong> poll options allows the user to enter text into a text input for that particular option.";
-$lang['polls.type_info'] 				= "A poll can either be <strong>single</strong> or <strong>multiple</strong>. A <strong>single</strong> poll restricts users to only voting for one poll option. A <strong>multiple</strong> poll allows the user to vote for multiple poll options.";
+$lang['polls.options_info'] 			= 'A poll option can either be <strong>defined</strong> or <strong>other</strong>. A <strong>defined</strong> poll option lets the user vote for a poll option that you specify. An <strong>other</strong> poll options allows the user to enter text into a text input for that particular option.';
+$lang['polls.type_info'] 				= 'A poll can either be <strong>single</strong> or <strong>multiple</strong>. A <strong>single</strong> poll restricts users to only voting for one poll option. A <strong>multiple</strong> poll allows the user to vote for multiple poll options.';
 
 // Poll types
 $lang['polls.single']					= 'Single';
