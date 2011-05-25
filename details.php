@@ -15,7 +15,7 @@ class Module_Polls extends Module {
 			),
 			'frontend' => TRUE,
 			'backend' => TRUE,
-			'menu' => FALSE
+			'menu' => 'content'
 		);
 	}
 
