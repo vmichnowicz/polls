@@ -1,4 +1,4 @@
-<h2 id="page_title"><?php echo lang('polls.galleries_label'); ?></h2>
+<h2 id="page_title"><?php echo lang('polls.polls'); ?></h2>
 
 <?php if ($polls): ?>
 <ul class="poll_options">
