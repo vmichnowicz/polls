@@ -47,6 +47,7 @@ class Polls_m extends MY_Model {
 					'created' 			=> $row->created,
 					'last_updated' 		=> $row->last_updated,
 					'type' 				=> $row->type,
+					'multiple_votes'	=> $row->multiple_votes,
 					'comments_enabled' 	=> (bool)$row->comments_enabled,
 					'members_only' 		=> (bool)$row->members_only
 				);
@@ -158,6 +159,7 @@ class Polls_m extends MY_Model {
 				'is_open' 			=> $poll_open,
 				'type' 				=> $row->type,
 				'created' 			=> $row->created,
+				'multiple_votes'	=> $row->multiple_votes,
 				'comments_enabled' 	=> (bool)$row->comments_enabled,
 				'members_only' 		=> (bool)$row->members_only
 			);
@@ -187,6 +189,7 @@ class Polls_m extends MY_Model {
 			'open_date' 		=> date_to_timestamp($input['open_date']),
 			'close_date' 		=> date_to_timestamp($input['close_date']),
 			'type' 				=> $input['type'],
+			'multiple_votes'	=> (bool)$input['multiple_votes'],
 			'comments_enabled' 	=> (bool)$input['comments_enabled'],
 			'members_only' 		=> (bool)$input['members_only'],
 			'created' 			=> time()
@@ -235,6 +238,7 @@ class Polls_m extends MY_Model {
 			'open_date' 		=> date_to_timestamp($input['open_date']),
 			'close_date' 		=> date_to_timestamp($input['close_date']),
 			'type' 				=> $input['type'],
+			'multiple_votes' 	=> (bool)$input['multiple_votes'],
 			'comments_enabled' 	=> (bool)$input['comments_enabled'],
 			'members_only' 		=> (bool)$input['members_only'],
 			'last_updated' 		=> time()
