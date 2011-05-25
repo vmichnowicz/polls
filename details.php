@@ -33,8 +33,9 @@ class Module_Polls extends Module {
 			`close_date` int(16) unsigned DEFAULT NULL,
 			`created` int(16) unsigned NOT NULL,
 			`last_updated` int(16) unsigned DEFAULT NULL,
-			`comments_enabled` tinyint(1) NOT NULL DEFAULT '0',
-			`members_only` tinyint(1) NOT NULL DEFAULT '0',
+			`multiple_votes` tinyint(1) unsigned NOT NULL DEFAULT '0',
+			`comments_enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
+			`members_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 		");
@@ -178,6 +179,13 @@ class Module_Polls extends Module {
 				REFERENCES `polls` (`id`)
 				ON DELETE CASCADE
 				ON UPDATE CASCADE;
+			");
+		}
+		// Version 0.5
+		elseif ($old_version == '0.5')
+		{
+			$this->db->query("
+				ALTER TABLE  `polls` ADD  `multiple_votes` TINYINT(1) NOT NULL DEFAULT  '0' AFTER  `last_updated`
 			");
 		}
 		return TRUE;
