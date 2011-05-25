@@ -26,4 +26,3 @@ $route['polls/admin(:any)?'] 	= 'admin$1';
 // Rewrite the URLs
 $route['polls/results/(:any)'] 	= 'polls/results/$1';
 $route['polls/(:any)'] 			= 'polls/poll/$1';
-?>
