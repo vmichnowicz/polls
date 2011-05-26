@@ -18,6 +18,11 @@ limitations under the License.
 Change List
 ================================
 
+**Polls version 0.6**
+
+* Works with PyroCMS version 1.2
+* Now have the option to allow a voter to vote multiple times
+
 **Polls version 0.5.1**
 
 * Now works with PyroCMS version 1.2
