@@ -22,6 +22,8 @@ Change List
 
 * Works with PyroCMS version 1.2
 * Now have the option to allow a voter to vote multiple times
+* Cleaned up some code
+* Polls are now found in the `Content` section of the PyroCMS admin panel
 
 **Polls version 0.5.1**
 
