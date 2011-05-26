@@ -315,7 +315,6 @@ class Poll_options_m extends MY_Model {
 		$this->db->trans_complete();
 
 		return $this->db->trans_status() ? TRUE : FALSE;
-
 	}
 
 }

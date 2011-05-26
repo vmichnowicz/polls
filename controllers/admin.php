@@ -3,8 +3,8 @@
 /**
  * Create totally awesome polls.
  *
- * @author 	Victor Michnowicz
- * @category 	Modules
+ * @author Victor Michnowicz
+ * @category Modules
  */
 class Admin extends Admin_Controller {
 
@@ -19,7 +19,6 @@ class Admin extends Admin_Controller {
 	/**
 	 * Constructor method
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @return void
 	 */
@@ -82,7 +81,6 @@ class Admin extends Admin_Controller {
 				'label' => 'Publish Poll',
 				'rules' => 'trim'
 			)
-
 		);
 		
 		// Put those cool buttons at the top of the admin panel
@@ -92,7 +90,6 @@ class Admin extends Admin_Controller {
 	/**
 	 * List all polls
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @return void
 	 */
@@ -118,13 +115,11 @@ class Admin extends Admin_Controller {
 	/**
 	 * Create a new poll
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @return void
 	 */
 	public function create()
 	{
-		
 		// Set the validation rules
 		$this->form_validation->set_rules($this->poll_validation_rules);
 		
@@ -164,9 +159,8 @@ class Admin extends Admin_Controller {
 	/**
 	 * Manage an existing poll
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
-	 * @param int $id The ID of the poll to manage
+	 * @param int			ID of the poll to manage
 	 * @return void
 	 */
 	public function manage($id = NULL)
@@ -221,9 +215,8 @@ class Admin extends Admin_Controller {
 	/**
 	 * View poll results
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
-	 * @param int $id The ID of the poll
+	 * @param int			ID of the poll
 	 * @return void
 	 */
 	public function results($id = NULL)
@@ -258,9 +251,8 @@ class Admin extends Admin_Controller {
 	/**
 	 * Delete an existing poll
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
-	 * @param int $id The ID of the poll to delete
+	 * @param int			ID of the poll to delete
 	 * @return void
 	 */
 	public function delete($id = NULL)
@@ -311,7 +303,6 @@ class Admin extends Admin_Controller {
 	/**
 	 * Validate a date (used for CIs form validation)
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param string YYYY/MM/DD date string
 	 * @return bool
@@ -347,7 +338,6 @@ class Admin extends Admin_Controller {
 	/**
 	 * Add a poll option
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @return bool
 	 */
@@ -363,7 +353,6 @@ class Admin extends Admin_Controller {
 	/**
 	 * Update poll option order
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int 			The ID of the poll
 	 * @return null

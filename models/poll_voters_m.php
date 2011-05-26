@@ -84,14 +84,7 @@ class Poll_voters_m extends MY_Model {
 				)
 		");
 		
-		if ($query->num_rows() > 0)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
+		return $query->num_rows() > 0 ? TRUE : FALSE;
 	}
 
 }
