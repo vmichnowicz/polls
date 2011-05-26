@@ -70,7 +70,6 @@ class Polls_m extends MY_Model {
 	public function poll_exists($id)
 	{
 		$query = $this->db
-			->from('polls')
 			->where('id', $id)
 			->limit(1)
 			->get('polls');
