@@ -10,8 +10,7 @@ class Poll_voters_m extends MY_Model {
 	
 	/**
 	 * Constructor method
-	 * 
-	 * @author Victor Michnowicz
+	 *
 	 * @access public
 	 * @return void
 	 */

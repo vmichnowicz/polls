@@ -69,22 +69,13 @@ class Polls_m extends MY_Model {
 	 */	
 	public function poll_exists($id)
 	{
-		$this->db
-			->select('id')
+		$query = $this->db
 			->from('polls')
 			->where('id', $id)
-			->limit(1);
+			->limit(1)
+			->get('polls');
 		
-		$query = $this->db->get();
-		
-		// If this poll exists
-		if ($query->num_rows() > 0)
-		{			
-			return TRUE;
-		}
-		
-		// If the poll does not exist
-		return FALSE;
+		return $query->num_rows() > 0 ? TRUE : FALSE;
 	}
 	
 	/**
@@ -96,13 +87,10 @@ class Polls_m extends MY_Model {
 	 */		
 	public function get_poll_id_from_slug($slug)
 	{
-		$this->db
-			->select('id')
-			->from('polls')
+		$query = $this->db
 			->where('slug', $slug)
-			->limit(1);
-		
-		$query = $this->db->get();
+			->limit(1)
+			->get('polls');
 
 		if ($query->num_rows() > 0)
 		{
