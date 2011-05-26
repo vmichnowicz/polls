@@ -9,8 +9,8 @@
  */
 class Polls extends Public_Controller {
 	
-	public $already_voted;
-	public $poll_open;
+	private $already_voted;
+	private $poll_open;
 	
 	/**
 	 * Constructor method
@@ -74,13 +74,13 @@ class Polls extends Public_Controller {
 		// Is this poll only for logged in members?
 		$members_only = $data['members_only'];
 		
-		// If this poll is for members only and the user is not a member
+		// If this poll is for members only and the user is not logged in
 		if ( $members_only AND !$this->ion_auth->logged_in() )
 		{
 			return FALSE;
 		}
 		
-		// If this poll is not open?
+		// If this poll is not open
 		if ( ! $this->poll_open($data['open_date'], $data['close_date']) )
 		{
 			return FALSE;
@@ -117,97 +117,75 @@ class Polls extends Public_Controller {
 		{
 			// Get the data for this particular poll
 			$data['poll'] = $this->polls_m->get_poll_by_id($poll_id);
-
+			
+			// Multiple option polls use checkbox inputs, single option polls use radio inputs
+			$data['poll']['input_type'] = $data['poll']['type'] == 'single' ? 'radio' : 'checkbox';
+			
 			// Can this user vote?
 			$can_vote = $this->can_vote($data['poll']);
 			
 			// If the user decided to vote, and can vote
-			if ( $this->input->post('vote') AND $can_vote )
+			if ( $this->input->post('submit') AND $can_vote )
 			{
-				// Make sure current session matches the session ID in the hidden input field
-				// If the user has cookies disabled then the session ID will have changed
+				/**
+				 * Make sure current session matches the session ID in the hidden input field
+				 * If the user has cookies disabled then the session ID will have changed
+				 */
 				if ($this->session->userdata('session_id') != $this->input->post('session_id'))
 				{
 					show_error(lang('polls.cookies_required'));
 				}
 				
 				// Grab all votes (or vote)
-				$votes = $this->input->post('vote');
+				$selected_options = $this->input->post('options');
 				
-				// Grab all "other" inputs
-				$other = $this->input->post('other');
-				
-				// Array that will later be stored in cookies and used to determine what option(s) user voted for
-				$votes_ids = array();
+				// Grab all "other" votes
+				$other_options = $this->input->post('other_options');
 				
 				// If user sumitted multiple votes in a poll that only allows one vote (very naugty!)
-				if (count($votes) > 1 AND $data['poll']['type'] != 'multiple')
+				if (count($selected_options) > 1 AND $data['poll']['type'] != 'multiple')
 				{
 					show_404();
 				}
 				
-				// If our $votes are *not* an array (that means our poll type is "single")
-				if ( ! is_array($votes) )
+				// Get all poll options
+				$poll_options = $this->poll_options_m->get_all_where_poll_id($poll_id);
+				
+				// Loop through all of our selected poll optoins
+				foreach($selected_options as $option)
 				{
-					$votes = array(
-						(int)$votes => array(
-							'id' => $votes
-						)
-					);
+					// If this poll option is not a valid option for the current poll
+					if ( ! array_key_exists($option['id'], $poll_options) )
+					{
+						show_404();
+					}
 				}
 				
-				// If we have "other" inputs
-				if ($other)
+				// For each selected poll option
+				foreach ($selected_options as $option)
 				{
-					// Loop through each $other input
-					foreach ($other as $vote_id => $vote_info)
+					// Default to NULL "other" option text
+					$other = NULL;
+					
+					// If this current poll option is of type "other"
+					if ($poll_options[ $option['id'] ]['type'] == 'other')
 					{
-						// If user entered text in our "other" text input field
-						if (trim($vote_info['other']))
+						// If this poll option has corresponding "other" text
+						if (array_key_exists($option['id'], $other_options))
 						{
-							/*
-							 * If the user selected this option
-							 * 
-							 * If a user just inputs text into this field, but does not select the corresponding
-							 * radio or checkbox input as well, the vote will not be cast.
-							 * A user *must* select the checkbox or radio button to cast a vote.
-							 * It is assumed that JavaScript will be used to hide the text input unless
-							 * the checkbox or radio button is selected.
-							 */
-							if ( isset($votes[(int)$vote_id]) )
-							{
-								// Merge our user input text into our $votes array
-								$votes[$vote_id]['other'] = trim($vote_info['other']);
-							}
+							$other = trim($other_options[ $option['id'] ]);
 						}
 					}
-				}
-				
-				// Go through our $votes array
-				foreach ($votes as $vote)
-				{
-					// Make sure this poll option exists
-					if ($this->poll_options_m->poll_option_exists($poll_id, $vote['id']))
-					{
-						// Get "other" vote (if it exists)
-						$other = isset($vote['other']) ? $vote['other'] : NULL;
-						
-						// Record the vote
-						$this->poll_options_m->record_vote($vote['id'], $other);
-					}
 					
-					// Add ID to $votes_ids array
-					$votes_ids[] = $vote['id'];
+					// Record the vote
+					$this->poll_options_m->record_vote($option['id'], $other);
 				}
 				
-				// Set session data so this user can not vote again
-				$this->session->set_userdata('poll_' . $poll_id, $votes);
+				// Set session data so this user can not vote again (unless we explicitly allow it in the poll settings)
+				$this->session->set_userdata('poll_' . $poll_id, $selected_options);
 				
 				// Record user IP and session data in database 
 				$this->poll_voters_m->record_voter($poll_id);
-				
-				// User just voted
-				$already_voted = TRUE;
 				
 				// Redirect user to results
 				redirect('polls/results/' . $data['poll']['slug']);
@@ -235,7 +213,7 @@ class Polls extends Public_Controller {
 			}
 			
 			// Do we want comments?
-			$data['comments_enabled'] = ( $data['poll']['comments_enabled'] == 1 ) ? TRUE : FALSE;
+			$data['comments_enabled'] = $data['poll']['comments_enabled'] ? TRUE : FALSE;
 		
 			// If this user can vote and we are not forcing results
 			if ($can_vote AND !$show_results)

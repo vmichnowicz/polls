@@ -49,7 +49,7 @@ class Poll_options_m extends MY_Model {
 					}
 				}
 				
-				$results[] = array(
+				$results[$row->id] = array(
 					'id' => $row->id,
 					'type' => $row->type,
 					'title' => $row->title,
