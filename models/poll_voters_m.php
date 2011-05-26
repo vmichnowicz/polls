@@ -5,7 +5,6 @@
  *
  * @author Victor Michnowicz
  * @category Modules
- *
  */
 class Poll_voters_m extends MY_Model {
 	
@@ -25,9 +24,8 @@ class Poll_voters_m extends MY_Model {
 	/**
 	 * Record user details in database
 	 * 
-	 * This allows us to make sure the same user does not vote multiple times in the same poll
+	 * Make sure the same user does not vote multiple times in the same poll (unless we allow it!)
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int poll ID
 	 * @return void
@@ -48,7 +46,6 @@ class Poll_voters_m extends MY_Model {
 	/**
 	 * Has current user already voted in this poll?
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int poll ID
 	 * @return null

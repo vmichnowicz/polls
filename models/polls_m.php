@@ -11,7 +11,6 @@ class Polls_m extends MY_Model {
 	/**
 	 * Get all polls
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @return mixed
 	 */
@@ -64,7 +63,6 @@ class Polls_m extends MY_Model {
 	/**
 	 * Make sure a poll exists
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int poll ID
 	 * @return bool
@@ -92,7 +90,6 @@ class Polls_m extends MY_Model {
 	/**
 	 * Get the poll ID from its slug
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int poll slug
 	 * @return mixed
@@ -121,7 +118,6 @@ class Polls_m extends MY_Model {
 	/**
 	 * Return poll data
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int poll ID
 	 * @return mixed
@@ -174,7 +170,6 @@ class Polls_m extends MY_Model {
 	/**
 	 * Insert a new poll into the database
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param array $input The data to insert (a copy of $_POST)
 	 * @return bool
@@ -202,9 +197,8 @@ class Polls_m extends MY_Model {
 	}
 	
 	/**
-	 * Delete a new poll from the database
+	 * Delete a poll from the database
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int poll ID
 	 * @return bool
@@ -222,7 +216,6 @@ class Polls_m extends MY_Model {
 	/**
 	 * Update an existing poll
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int $id The ID of the poll to update
 	 * @param array $input The POST data to use for updating the DB record

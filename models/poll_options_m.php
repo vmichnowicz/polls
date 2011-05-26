@@ -5,14 +5,12 @@
  *
  * @author Victor Michnowicz
  * @category Modules
- *
  */
 class Poll_options_m extends MY_Model {
 	
 	/**
 	 * Get all poll options with the poll ID that is passed in
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int 			ID of the poll
 	 * @return mixed
@@ -69,7 +67,6 @@ class Poll_options_m extends MY_Model {
 	/**
 	 * Insert new poll options into the database
 	 *
-	 * @author Victor
 	 * @access public
 	 * @param int 			ID of the poll
 	 * @param array 		The poll option data to insert
@@ -113,7 +110,6 @@ class Poll_options_m extends MY_Model {
 	 *
 	 * Used on poll modification page with ajax_add_option() method
 	 *
-	 * @author Victor
 	 * @access public
 	 * @param int 			ID of the poll
 	 * @param string		Option type ("defined" or "other")
@@ -150,7 +146,6 @@ class Poll_options_m extends MY_Model {
 	/**
 	 * Get the total number of votes for a given poll
 	 *
-	 * @author Victor
 	 * @access public
 	 * @param int 			ID of the poll
 	 * @return int
@@ -173,7 +168,6 @@ class Poll_options_m extends MY_Model {
 	/**
 	 * Check to see if a poll options exists
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int 			The ID of the poll
 	 * @param array 		The ID of the poll option
@@ -194,7 +188,6 @@ class Poll_options_m extends MY_Model {
 	/**
 	 * Record a vote for a given poll option
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int 			The ID of the poll option
 	 * @param string 		The "other" vote text (optional)
@@ -228,7 +221,6 @@ class Poll_options_m extends MY_Model {
 	/**
 	 * Update poll option order
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int 			The ID of the poll
 	 * @param int 			The poll option ID
@@ -263,7 +255,6 @@ class Poll_options_m extends MY_Model {
 	/**
 	 * Update existing poll options (or add a new one if the poll option does not exist)
 	 *
-	 * @author Victor Michnowicz
 	 * @access public
 	 * @param int 			The ID of the poll
 	 * @param array 		The data to use for updating the DB record
