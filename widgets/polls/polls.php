@@ -10,9 +10,9 @@ class Widget_Polls extends Widgets {
 	
 	public $fields = array(
 		array(
-			'field'   => 'poll_id',
-			'label'   => 'Poll',
-			'rules'   => 'required'
+			'field'		=> 'poll_id',
+			'label'		=> 'Poll',
+			'rules'		=> 'required'
 		)
 	);
 	
