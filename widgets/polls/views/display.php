@@ -8,23 +8,13 @@
 			<ul class="poll_options">
 				<?php foreach($poll_options as $option): ?>
 					<li>
-					
 						<label for="option_<?php echo $option['id']; ?>">
-						
-							<?php if ($type == 'single'): ?>
-								<input type="radio" name="vote" id="option_<?php echo $option['id']; ?>" value="<?php echo $option['id']; ?>" />
-							<?php elseif ($type == 'multiple'): ?>
-								<input type="checkbox" name="vote[<?php echo $option['id']; ?>][id]" id="option_<?php echo $option['id']; ?>" value="<?php echo $option['id']; ?>" />
-							<?php endif; ?>
-							
+							<input type="<?php echo $input_type; ?>" name="options[]" value="<?php echo $option['id']; ?>" id="option_<?php echo $option['id']; ?>" />
 							<span><?php echo $option['title']; ?></span>
-							
 						</label>
-						
 						<?php if ($option['type'] == 'other'): ?>
-							<input type="text" name="other[<?php echo $option['id']; ?>][other]" id="other_<?php echo $option['id']; ?>" />
+							<input type="text" name="other_options[<?php echo $option['id']; ?>]" id="other_option_<?php echo $option['id']; ?>" />
 						<?php endif; ?>
-						
 					</li>
 				<?php endforeach; ?>
 			</ul>
@@ -35,7 +25,7 @@
 			
 			<input type="hidden" name="session_id" value="<?php echo $this->session->userdata('session_id'); ?>" />
 			
-			<input type="submit" value="Vote" />
+			<input type="submit" name="submit" value="Vote" />
 		</fieldset>
 	</form>
 

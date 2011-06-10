@@ -121,15 +121,27 @@ class Polls_m extends MY_Model {
 		{
 			$row = $query->row(); 
 			
-			// If poll has a close date and is currently open
-			if ( $row->close_date AND ( $row->close_date > time() AND $row->open_date < time() ) )
+			// Default to open poll status
+			$poll_open = TRUE;
+			
+			// If this poll has an open date
+			if ($row->open_date)
 			{
-				$poll_open = TRUE;
+				// If the open date is in the future
+				if ($row->open_date > time())
+				{
+					$poll_open = FALSE;
+				}
 			}
-			// If poll is closed
-			else
+			
+			// If this poll has a close date
+			if ($row->close_date)
 			{
-				$poll_open = FALSE;
+				// If the close date has already passed
+				if ($row->close_date < time())
+				{
+					$poll_open = FALSE;
+				}
 			}
 			
 			$data = array(

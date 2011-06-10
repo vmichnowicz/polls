@@ -6,7 +6,7 @@ class Widget_Polls extends Widgets {
 	public $description = 'Display a poll.';
 	public $author = 'Victor Michnowicz';
 	public $website = 'http://www.vmichnowicz.com/';
-	public $version = '0.2';
+	public $version = '0.3';
 	
 	public $fields = array(
 		array(
@@ -35,6 +35,9 @@ class Widget_Polls extends Widgets {
 		
 		// Has user alread voted in this poll?
 		$data['already_voted'] = $this->poll_voters_m->already_voted($poll_id);
+		
+		// Set input type
+		$data['input_type'] = $data['type'] == 'single' ? 'radio' : 'checkbox';
 		
 		// Get options
 		$data['poll_options'] = $this->poll_options_m->get_all_where_poll_id($poll_id);
