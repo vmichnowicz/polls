@@ -23,6 +23,9 @@ class Widget_Polls extends Widgets {
 		$this->load->model('polls/polls_m');
 		$this->load->model('polls/poll_options_m');
 		$this->load->model('polls/poll_voters_m');
+		
+		// Load language file
+		$this->lang->load('polls/polls');
 	}
 	
 	public function run($options)

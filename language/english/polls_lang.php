@@ -68,5 +68,6 @@ $lang['polls.no']						= 'No';
 
 // View a poll
 $lang['polls.total_votes']				= 'Total votes';
+$lang['polls.vote']						= 'Vote';
 $lang['polls.results']					= 'Results';
 $lang['polls.no_options']				= 'There are no options for this poll';

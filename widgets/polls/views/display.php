@@ -25,7 +25,7 @@
 			
 			<input type="hidden" name="session_id" value="<?php echo $this->session->userdata('session_id'); ?>" />
 			
-			<input type="submit" name="submit" value="Vote" />
+			<input type="submit" name="submit" value="<?php echo lang('polls.vote') ?>" />
 		</fieldset>
 	</form>
 
@@ -49,4 +49,4 @@
 
 <?php endif; ?>
 
-<a href="<?php echo site_url('polls/' . $slug); ?>">View Poll</a>
+<a href="<?php echo site_url('polls/' . $slug); ?>"><?php echo lang('polls.view_label') ?></a>
