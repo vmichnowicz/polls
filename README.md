@@ -18,6 +18,11 @@ limitations under the License.
 Change List
 ================================
 
+**Polls version 0.7**
+
+* Poll widget now works with latest polls module
+* Poll widget now references language file
+
 **Polls version 0.6.1**
 
 * Works with PyroCMS version 1.2
