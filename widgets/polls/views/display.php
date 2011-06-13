@@ -37,7 +37,7 @@
 			<?php foreach($poll_options as $option): ?>
 				<li>
 					<span><?php echo $option['title']; ?></span>
-					<em>&ndash; <?php echo $option['votes']; ?> votes</em>
+					<em>&ndash; <?php echo $option['votes']; ?> <?php echo lang('polls.votes') ?></em>
 					<div style="width: <?php echo $option['votes'] > 0 ? round( ($option['votes'] / $total_votes * 100), 1) : '0'; ?>%;">
 						<?php echo $option['votes'] > 0 ? round( ($option['votes'] / $total_votes * 100), 1) : '0'; ?>%
 					</div>

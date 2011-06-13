@@ -32,7 +32,7 @@
 							<option value="other"><?php echo lang('polls.other'); ?></option>
 						</select>
 						<input type="text" name="new_option_title" id="new_option_title" />
-						<input type="button" id="add_new_option" value="Add Option" />
+						<input type="button" id="add_new_option" value="<?php echo lang('polls.add_option_label'); ?>" />
 					</li>
 				</ul>
 				

@@ -6,7 +6,7 @@
 			<li>
 				<p>
 					<?php echo $option['title']; ?>
-					<em>(<?php echo $option['votes']; ?> votes)</em>
+					<em>(<?php echo $option['votes']; ?> <?php echo lang('polls.votes'); ?>)</em>
 				</p>
 				<div style="width: <?php echo $option['percent']; ?>%;">
 					<?php echo $option['percent']; ?>%

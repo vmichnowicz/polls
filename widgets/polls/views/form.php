@@ -1,6 +1,6 @@
 <ol>
 	<li class="even">
-		<label for="poll_id">Poll ID</label>
+		<label for="poll_id"><?php echo lang('polls.title') ?></label>
 		<select name="poll_id" id="poll_id">
 			<?php if ($polls): ?>
 				<?php foreach ($polls as $poll): ?>
