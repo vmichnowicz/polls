@@ -2,7 +2,7 @@
 
 class Module_Polls extends Module {
 
-	public $version = '1.0';
+	public $version = '0.8';
 
 	public function info()
 	{
@@ -130,11 +130,14 @@ class Module_Polls extends Module {
 		// Drop some tables
 		$this->db->query("DROP TABLE `" . $this->db->dbprefix('poll_voters') . "`, `" . $this->db->dbprefix('poll_other_votes') . "`, `" . $this->db->dbprefix('poll_options') . "`, `" . $this->db->dbprefix('polls') . "`");
 		
-		return $this->db->affected_rows() > 0 ? TRUE : FALSE;
+		return TRUE;
 	}
 
 	public function upgrade($old_version)
 	{
+		// Start transaction
+		$this->db->trans_start();
+
 		// Version 0.4 (the first official release)
 		if ($old_version == '0.4')
 		{
@@ -201,7 +204,27 @@ class Module_Polls extends Module {
 				ALTER TABLE  `polls` ADD  `multiple_votes` TINYINT(1) NOT NULL DEFAULT  '0' AFTER  `last_updated`
 			");
 		}
-		return TRUE;
+
+
+		// If less than version 0.8
+		if ($old_version < '0.8')
+		{
+			// Rename all tables to add prefix
+			$this->db->query("RENAME TABLE  `polls` TO  `" . $this->db->dbprefix('polls') . "`");
+			$this->db->query("RENAME TABLE  `poll_options` TO  `" . $this->db->dbprefix('poll_options') . "`");
+			$this->db->query("RENAME TABLE  `poll_other_votes` TO  `" . $this->db->dbprefix('poll_other_votes') . "`");
+			$this->db->query("RENAME TABLE  `poll_voters` TO  `" . $this->db->dbprefix('poll_voters') . "`");
+			$this->db->query("RENAME TABLE  `poll_options` TO  `" . $this->db->dbprefix('poll_options') . "`");
+			$this->db->query("RENAME TABLE  `poll_other_votes` TO  `" . $this->db->dbprefix('poll_other_votes') . "`");
+			$this->db->query("RENAME TABLE  `poll_voters` TO  `" . $this->db->dbprefix('poll_voters') . "`");
+
+		}
+
+		// End transaction
+		$this->db->trans_complete();
+
+		// If transaction was successful retrun TRUE, else FALSE
+		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 
 	public function help()
