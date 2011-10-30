@@ -156,7 +156,7 @@ class Poll_options_m extends MY_Model {
 		
 		$query = $this->db->query("
 			SELECT SUM(votes) AS sum
-			FROM poll_options
+			FROM "  . $this->db->dbprefix('poll_options') . "
 			WHERE poll_id = '$poll_id'
 		");
 		

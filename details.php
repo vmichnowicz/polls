@@ -2,7 +2,7 @@
 
 class Module_Polls extends Module {
 
-	public $version = '0.7';
+	public $version = '1.0';
 
 	public function info()
 	{
@@ -15,15 +15,24 @@ class Module_Polls extends Module {
 			),
 			'frontend' => TRUE,
 			'backend' => TRUE,
-			'menu' => 'content'
+			'menu' => 'content',
+			'shortcuts' => array(
+				array(
+			 	   'name' => 'polls.new_poll_label',
+				   'uri' => 'admin/polls/create',
+				),
+			),
 		);
 	}
 
 	public function install()
 	{
+		// Start transaction
+		$this->db->trans_start();
+
 		// Create polls table
-		$this->db->query("	
-			CREATE TABLE IF NOT EXISTS `polls` (
+		$this->db->query("
+			CREATE TABLE IF NOT EXISTS `" . $this->db->dbprefix('polls') . "` (
 			`id` tinyint(11) unsigned NOT NULL AUTO_INCREMENT,
 			`slug` varchar(64) NOT NULL,
 			`title` varchar(64) NOT NULL,
@@ -37,12 +46,12 @@ class Module_Polls extends Module {
 			`comments_enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			`members_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+			) ENGINE=InnoDB;
 		");
-		
+
 		// Create poll_options table
 		$this->db->query("
-			CREATE TABLE IF NOT EXISTS `poll_options` (
+			CREATE TABLE IF NOT EXISTS `" . $this->db->dbprefix('poll_options') . "` (
 			`id` smallint(11) unsigned NOT NULL AUTO_INCREMENT,
 			`poll_id` tinyint(11) unsigned NOT NULL,
 			`type` enum('defined','other') NOT NULL DEFAULT 'defined',
@@ -51,24 +60,24 @@ class Module_Polls extends Module {
 			`votes` mediumint(11) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`),
 			KEY `poll_id` (`poll_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+			) ENGINE=InnoDB;
 		");
-		
+
 		// Create poll_other_votes table
 		$this->db->query("
-			CREATE TABLE IF NOT EXISTS `poll_other_votes` (
+			CREATE TABLE IF NOT EXISTS `" . $this->db->dbprefix('poll_other_votes') . "` (
 			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 			`parent_id` smallint(11) unsigned NOT NULL,
 			`text` tinytext NOT NULL,
 			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY (`id`),
 			KEY `parent_id` (`parent_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+			) ENGINE=InnoDB;
 		");
-		
+
 		// Create poll_voters table
 		$this->db->query("
-			CREATE TABLE IF NOT EXISTS `poll_voters` (
+			CREATE TABLE IF NOT EXISTS `" . $this->db->dbprefix('poll_voters') . "` (
 			`id` mediumint(32) unsigned NOT NULL AUTO_INCREMENT,
 			`poll_id` tinyint(11) unsigned NOT NULL,
 			`user_id` smallint(5) unsigned DEFAULT NULL,
@@ -78,46 +87,50 @@ class Module_Polls extends Module {
 			PRIMARY KEY (`id`),
 			KEY `poll_id` (`poll_id`),
 			KEY `user_id` (`user_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+			) ENGINE=InnoDB;
 		");
-		
+
 		// Referental integrity fo' sho
 		$this->db->query("
-			ALTER TABLE `poll_options`
+			ALTER TABLE `" . $this->db->dbprefix('poll_options') . "`
 			ADD CONSTRAINT `poll_options_ibfk_1`
 			FOREIGN KEY (`poll_id`)
-			REFERENCES `polls` (`id`)
+			REFERENCES `" . $this->db->dbprefix('polls') . "` (`id`)
 			ON DELETE CASCADE
 			ON UPDATE CASCADE;
 		");
-		
+
 		$this->db->query("
-			ALTER TABLE `poll_other_votes`
+			ALTER TABLE `" . $this->db->dbprefix('poll_other_votes') . "`
 			ADD CONSTRAINT `poll_other_votes_ibfk_1`
 			FOREIGN KEY (`parent_id`)
-			REFERENCES `poll_options` (`id`)
+			REFERENCES `" . $this->db->dbprefix('poll_options') . "` (`id`)
 			ON DELETE CASCADE
 			ON UPDATE CASCADE;
 		");
-		
+
 		$this->db->query("
-			ALTER TABLE `poll_voters`
+			ALTER TABLE `" . $this->db->dbprefix('poll_voters') . "`
 			ADD CONSTRAINT `poll_votes_ibfk_1`
 			FOREIGN KEY (`poll_id`)
-			REFERENCES `polls` (`id`)
+			REFERENCES `" . $this->db->dbprefix('polls') . "` (`id`)
 			ON DELETE CASCADE
 			ON UPDATE CASCADE;
 		");
-		
-		// It worked!
-		return TRUE;
+
+		// End transaction
+		$this->db->trans_complete();
+
+		// If transaction was successful retrun TRUE, else FALSE
+		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 
 	public function uninstall()
 	{
 		// Drop some tables
-		$this->db->query("DROP TABLE `poll_voters`, `poll_other_votes`, `poll_options`, `polls`");
-		return TRUE;
+		$this->db->query("DROP TABLE `" . $this->db->dbprefix('poll_voters') . "`, `" . $this->db->dbprefix('poll_other_votes') . "`, `" . $this->db->dbprefix('poll_options') . "`, `" . $this->db->dbprefix('polls') . "`");
+		
+		return $this->db->affected_rows() > 0 ? TRUE : FALSE;
 	}
 
 	public function upgrade($old_version)
@@ -129,12 +142,12 @@ class Module_Polls extends Module {
 			$this->db->query("
 				ALTER TABLE  `polls` ADD  `type` enum('single','multiple') NOT NULL DEFAULT 'single'
 			");
-			
+
 			// Update poll_options table
 			$this->db->query("
 				ALTER TABLE  `poll_options` ADD  `type` enum('defined','other') NOT NULL DEFAULT 'defined'
 			");
-			
+
 			// Add poll_other_votes table
 			$this->db->query("
 				CREATE TABLE IF NOT EXISTS `poll_other_votes` (
@@ -146,7 +159,7 @@ class Module_Polls extends Module {
 				KEY `parent_id` (`parent_id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 			");
-		
+
 			// Add poll_voters table
 			$this->db->query("
 				CREATE TABLE IF NOT EXISTS `poll_voters` (
@@ -161,7 +174,7 @@ class Module_Polls extends Module {
 				KEY `user_id` (`user_id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 			");
-			
+
 			// Referental integrity fo' sho
 			$this->db->query("
 				ALTER TABLE `poll_other_votes`
@@ -171,7 +184,7 @@ class Module_Polls extends Module {
 				ON DELETE CASCADE
 				ON UPDATE CASCADE;
 			");
-			
+
 			$this->db->query("
 				ALTER TABLE `poll_voters`
 				ADD CONSTRAINT `poll_votes_ibfk_1`

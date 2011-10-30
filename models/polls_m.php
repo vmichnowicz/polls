@@ -216,8 +216,8 @@ class Polls_m extends MY_Model {
 	 * Update an existing poll
 	 *
 	 * @access public
-	 * @param int $id The ID of the poll to update
-	 * @param array $input The POST data to use for updating the DB record
+	 * @param int The ID of the poll to update
+	 * @param array The POST data to use for updating the DB record
 	 * @return bool
 	 */
 	public function update($id, $input)

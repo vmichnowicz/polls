@@ -75,7 +75,7 @@ class Poll_voters_m extends MY_Model {
 		 */
 		$query = $this->db->query("
 			SELECT *
-			FROM poll_voters
+			FROM "  . $this->db->dbprefix('poll_voters') . "
 			WHERE poll_id = $poll_id AND
 				(
 					user_id = '$user_id' OR
