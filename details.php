@@ -2,7 +2,7 @@
 
 class Module_Polls extends Module {
 
-	public $version = '0.8';
+	public $version = '0.9';
 
 	public function info()
 	{
@@ -232,4 +232,5 @@ class Module_Polls extends Module {
 		return '<a href="https://github.com/vmichnowicz/polls">View Source on Github</a>';
 	}
 }
-/* End of file details.php */
+
+// EOF

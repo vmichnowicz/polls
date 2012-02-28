@@ -30,6 +30,7 @@ $lang['polls.no_poll_options_error']	= 'Er zijn geen opties voor deze poll';
 $lang['polls.no_polls_error'] 			= 'Er zijn nog geen polls aangemaakt.';
 $lang['polls.install_error']			= 'De module kon niet worden geinstalleerd.';
 $lang['polls.cookies_required'] 		= 'Om te kunnen stemmen op deze poll moeten cookies zijn ingeschakeld.';
+$lang['polls.no_options_submitted'] 	= 'No poll options submitted.'; // Needs to be translated
 
 // Polls overview headers
 $lang['polls.title']					= 'Poll titel';
