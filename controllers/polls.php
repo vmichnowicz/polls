@@ -42,7 +42,6 @@ class Polls extends Public_Controller {
 		$this->template
 			->title('polls')
 			->set_breadcrumb( lang('polls.polls'))
-			->append_metadata( css('polls.css', 'polls') )
 			->build('index', $data);
 	}
 
@@ -221,7 +220,6 @@ class Polls extends Public_Controller {
 			{
 				$this->template
 					->title($data['poll']['title'])
-					->append_metadata( css('polls.css', 'polls') )
 					->set_breadcrumb( lang('polls.polls'), 'polls')
 					->set_breadcrumb( $data['poll']['title'] )
 					->build('poll_open', $data);
@@ -234,9 +232,9 @@ class Polls extends Public_Controller {
 				{
 					$this->template
 						->title($data['poll']['title'])
-						->append_metadata( css('polls.css', 'polls') )
 						->set_breadcrumb( lang('polls.polls'), 'polls')
-						->set_breadcrumb( $data['poll']['title'] )
+						->set_breadcrumb( $data['poll']['title'], 'polls/' . $data['poll']['slug'] )
+						->set_breadcrumb( lang('polls.results') )
 						->build('poll_closed', $data);
 				}
 				else

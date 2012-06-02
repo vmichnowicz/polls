@@ -150,8 +150,8 @@ class Admin extends Admin_Controller {
 		// Load the view
 		$this->template
 			->append_metadata( $this->load->view('fragments/wysiwyg', $this->data, TRUE) )
-			->append_metadata( js('admin.js', 'polls') )
-			->append_metadata( js('create.js', 'polls') )
+			->append_js('module::admin.js')
+			->append_js('module::create.js')
 			->title($this->module_details['name'], lang('polls.new_poll_label'))
 			->build('admin/new_poll', $data);
 	}
@@ -204,10 +204,10 @@ class Admin extends Admin_Controller {
 		// Build that thang
 		$this->template
 			->append_metadata( $this->load->view('fragments/wysiwyg', $this->data, TRUE) )
-			->append_metadata( js('admin.js', 'polls') )
-			->append_metadata( js('manage.js', 'polls') )
-			->append_metadata( css('admin.css', 'polls') )
-			->append_metadata( css('manage.css', 'polls') )
+			->append_js('module::admin.js')
+			->append_js('module::manage.js')
+			->append_css('module::admin.css')
+			->append_css('module::manage.css')
 			->title($this->module_details['name'], lang('polls.new_poll_label'))
 			->build('admin/manage_poll', $data);
 	}
@@ -243,7 +243,7 @@ class Admin extends Admin_Controller {
 		
 		// Build that thang
 		$this->template
-			->append_metadata( css('results.css', 'polls') )
+			->append_css('module::results.css')
 			->title($this->module_details['name'], lang('polls.results_label'))
 			->build('admin/poll_results', $data);
 	}
@@ -310,7 +310,7 @@ class Admin extends Admin_Controller {
 	public function date_check($date)
 	{
 		// If no date was provided, return TRUE
-		if (!$date) {
+		if ( ! $date ) {
 			return TRUE;
 		}
 		
@@ -318,14 +318,14 @@ class Admin extends Admin_Controller {
 		$date_exploded = explode('/', $date, 3);
 		
 		// Make sure we are dealing with three chunks
-		if (count($date_exploded) == 3)
+		if ( is_array($date_exploded) AND count($date_exploded) === 3 )
 		{
 			$year = (int)$date_exploded[0];
 			$month = (int)$date_exploded[1];
 			$day = (int)$date_exploded[2];
 			
 			// If the user entered a valid date
-			if(checkdate($month, $day, $year))
+			if ( checkdate($month, $day, $year) )
 			{
 				return TRUE;
 			}

@@ -4,6 +4,12 @@ class Module_Polls extends Module {
 
 	public $version = '0.9';
 
+	/**
+	 * Module information
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public function info()
 	{
 		return array(
@@ -25,8 +31,17 @@ class Module_Polls extends Module {
 		);
 	}
 
+	/**
+	 * Install module
+	 *
+	 * @access public
+	 * @return bool
+	 */
 	public function install()
 	{
+		// Make sure all tables are gone first
+		$this->uninstall();
+
 		// Start transaction
 		$this->db->trans_start();
 
@@ -46,7 +61,7 @@ class Module_Polls extends Module {
 			`comments_enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			`members_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`)
-			) ENGINE=InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 
 		// Create poll_options table
@@ -60,7 +75,7 @@ class Module_Polls extends Module {
 			`votes` mediumint(11) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`),
 			KEY `poll_id` (`poll_id`)
-			) ENGINE=InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 
 		// Create poll_other_votes table
@@ -72,7 +87,7 @@ class Module_Polls extends Module {
 			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY (`id`),
 			KEY `parent_id` (`parent_id`)
-			) ENGINE=InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 
 		// Create poll_voters table
@@ -87,7 +102,7 @@ class Module_Polls extends Module {
 			PRIMARY KEY (`id`),
 			KEY `poll_id` (`poll_id`),
 			KEY `user_id` (`user_id`)
-			) ENGINE=InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 
 		// Referental integrity fo' sho
@@ -125,14 +140,32 @@ class Module_Polls extends Module {
 		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 
+	/**
+	 * Uninstall module
+	 *
+	 * Due to foreign key constraints we must drop tables in a very specific
+	 * order.
+	 *
+	 * @access public
+	 * @return bool
+	 */
 	public function uninstall()
 	{
-		// Drop some tables
-		$this->db->query("DROP TABLE `" . $this->db->dbprefix('poll_voters') . "`, `" . $this->db->dbprefix('poll_other_votes') . "`, `" . $this->db->dbprefix('poll_options') . "`, `" . $this->db->dbprefix('polls') . "`");
+		$this->dbforge->drop_table('poll_voters');
+		$this->dbforge->drop_table('poll_other_votes');
+		$this->dbforge->drop_table('poll_options');
+		$this->dbforge->drop_table('polls');
 		
 		return TRUE;
 	}
 
+	/**
+	 * Upgrade module
+	 *
+	 * @access public
+	 * @param string
+	 * @return bool
+	 */
 	public function upgrade($old_version)
 	{
 		// Start transaction
@@ -160,7 +193,7 @@ class Module_Polls extends Module {
 				`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY (`id`),
 				KEY `parent_id` (`parent_id`)
-				) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 			");
 
 			// Add poll_voters table
@@ -175,7 +208,7 @@ class Module_Polls extends Module {
 				PRIMARY KEY (`id`),
 				KEY `poll_id` (`poll_id`),
 				KEY `user_id` (`user_id`)
-				) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 			");
 
 			// Referental integrity fo' sho
@@ -217,7 +250,6 @@ class Module_Polls extends Module {
 			$this->db->query("RENAME TABLE  `poll_options` TO  `" . $this->db->dbprefix('poll_options') . "`");
 			$this->db->query("RENAME TABLE  `poll_other_votes` TO  `" . $this->db->dbprefix('poll_other_votes') . "`");
 			$this->db->query("RENAME TABLE  `poll_voters` TO  `" . $this->db->dbprefix('poll_voters') . "`");
-
 		}
 
 		// End transaction
