@@ -10,7 +10,7 @@ class Polls_m extends MY_Model {
 
 	const TYPE_SINGLE = 'single';
 	const TYPE_MULTIPLE = 'multiple';
-	protected static $types = array(TYPE_SINGLE, TYPE_MULTIPLE);
+	protected static $types = array(self::TYPE_SINGLE, self::TYPE_MULTIPLE);
 
 	/**
 	 * Get all polls

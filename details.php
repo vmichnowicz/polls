@@ -89,7 +89,7 @@ class Module_Polls extends Module {
 			`id` smallint(11) unsigned NOT NULL AUTO_INCREMENT,
 			`poll_id` tinyint(11) unsigned NOT NULL,
 			`type` enum('defined','other') NOT NULL DEFAULT 'defined',
-			`title` varchar(64) NOT NULL,
+			`title` varchar(256) NOT NULL,
 			`order` tinyint(2) unsigned DEFAULT NULL,
 			`votes` mediumint(11) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`),
@@ -272,11 +272,15 @@ class Module_Polls extends Module {
 			$this->db->query("RENAME TABLE  `poll_voters` TO  `" . $this->db->dbprefix('poll_voters') . "`");
 		}
 
-		// Versions less than 1.0 had a TIMESTAMP type for poll_other_options (makes more sense IMO, but everything else in PyroCMS is using UNIX timestamps)
 		if ($old_version < '1.0')
 		{
+			// Versions less than 1.0 had a TIMESTAMP type for poll_other_options (makes more sense IMO, but everything else in PyroCMS is using UNIX timestamps)
 			$this->db->query("
 				ALTER TABLE `" . $this->db->dbprefix('poll_other_votes') . "` CHANGE `created` `created` INT(16) NOT NULL
+			");
+
+			$this->db->query("
+				ALTER TABLE  `" . $this->db->dbprefix('poll_options') . "` CHANGE `title` `title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
 			");
 		}
 

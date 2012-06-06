@@ -164,7 +164,7 @@ class Polls extends Public_Controller {
 						}
 
 						// Record the vote
-						$this->poll_options_m->record_vote($option_id, $other);
+						$this->poll_options_m->update_option_votes($option_id, $other);
 					}
 				}
 
@@ -172,7 +172,7 @@ class Polls extends Public_Controller {
 				$this->session->set_userdata('poll_' . $poll_id, $options);
 
 				// Record user IP and session data in database 
-				$this->poll_voters_m->record_voter($poll_id);
+				$this->poll_voters_m->insert_voter($poll_id);
 
 				// Redirect user to results
 				redirect('polls/results/' . $poll['slug']);

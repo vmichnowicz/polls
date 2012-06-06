@@ -22,6 +22,6 @@ jQuery(document).ready(function($) {
 	});
 	
 	// Datepicker
-	$("#open_date, #close_date").datepicker({ dateFormat: 'yy/m/d' });
+	$("#open_date, #close_date").datepicker({ dateFormat: 'yy-mm-dd' });
 	
 });

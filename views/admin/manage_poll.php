@@ -74,12 +74,12 @@
 
 			<li class="odd">
 				<label for="open_date"><?php echo lang('polls.open_date_label'); ?></label>
-				<?php echo form_input('open_date', $poll['open_date'] instanceof DateTime ? $poll['open_date']->format('Y/m/d') : NULL, 'id="open_date"'); ?>
+				<?php echo form_input('open_date', $poll['open_date'] instanceof DateTime ? $poll['open_date']->format('Y-m-d') : NULL, 'id="open_date"'); ?>
 			</li>
 
 			<li class="even">
 				<label for="close_date"><?php echo lang('polls.close_date_label'); ?></label>
-				<?php echo form_input('close_date',$poll['close_date'] instanceof DateTime ? $poll['close_date']->format('Y/m/d') : NULL, 'id="close_date"'); ?>
+				<?php echo form_input('close_date',$poll['close_date'] instanceof DateTime ? $poll['close_date']->format('Y-m-d') : NULL, 'id="close_date"'); ?>
 			</li>
 
 			<li class="odd">

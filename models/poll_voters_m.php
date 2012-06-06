@@ -29,7 +29,7 @@ class Poll_voters_m extends MY_Model {
 	 * @param int poll ID
 	 * @return void
 	 */		
-	public function record_voter($poll_id)
+	public function insert_voter($poll_id)
 	{
 		$data = array(
 			'poll_id' 		=> $poll_id,
@@ -40,6 +40,8 @@ class Poll_voters_m extends MY_Model {
 		);
 
 		$this->db->insert('poll_voters', $data);
+
+		return $this->db->affected_rows() > 0 ? TRUE : FALSE; 
 	}
 
 	/**

@@ -54,8 +54,8 @@ $lang['polls.description_label']		= 'Poll omschrijving';
 $lang['polls.options_label']			= 'Poll opties';
 $lang['polls.add_option_label']			= 'Optie toevoegen';
 $lang['polls.multiple_votes_label']		= 'Meerdere stemmen';
-$lang['polls.open_date_label']			= 'Datum geopend (YYYY/MM/DD)';
-$lang['polls.close_date_label']			= 'Datum gesloten (YYYY/MM/DD)';
+$lang['polls.open_date_label']			= 'Datum geopend (YYYY-MM-DD)';
+$lang['polls.close_date_label']			= 'Datum gesloten (YYYY-MM-DD)';
 $lang['polls.comments_label']			= 'Opmerkingen aanzetten';
 $lang['polls.members_only_label']		= 'Alleen leden';
 

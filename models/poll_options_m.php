@@ -8,8 +8,11 @@
  */
 class Poll_options_m extends MY_Model {
 
+	// Poll option type constants
 	const TYPE_DEFINED = 'defined';
 	const TYPE_OTHER = 'other';
+
+	// Array of legit poll option types
 	protected static $types = array(self::TYPE_DEFINED, self::TYPE_OTHER);
 
 	/**
@@ -174,7 +177,7 @@ class Poll_options_m extends MY_Model {
 	 * @param array 		The ID of the poll option
 	 * @return bool
 	 */	
-	public function poll_option_exists($poll_id, $poll_option_id)
+	public function check_option_exists($poll_id, $poll_option_id)
 	{
 		$query = $this->db
 			->select('id')
@@ -194,7 +197,7 @@ class Poll_options_m extends MY_Model {
 	 * @param string 		The "other" vote text (optional)
 	 * @return bool
 	 */	
-	public function record_vote($poll_option_id, $poll_other_vote = NULL)
+	public function update_option_votes($poll_option_id, $poll_other_vote = NULL)
 	{
 		$this->db->trans_start();
 
@@ -202,23 +205,23 @@ class Poll_options_m extends MY_Model {
 			->set('votes', 'votes + 1', FALSE)
 			->where('id', $poll_option_id)
 			->update('poll_options');
-		
+
 		// If an "other" poll option was specified
-		if ($poll_other_vote)
+		if ( isset($poll_other_vote) AND $poll_other_vote !== '' )
 		{
 			$data = array(
-				'parent_id' 	=> $poll_option_id,
-				'text' 			=> $poll_other_vote
+				'parent_id' => $poll_option_id,
+				'text' 		=> $poll_other_vote
 			);
-			
+
 			$this->db->insert('poll_other_votes', $data);
 		}
 
 		$this->db->trans_complete();
 
-		return $this->db->trans_status() ? TRUE : FALSE;
+		return $this->db->trans_status();
 	}
-	
+
 	/**
 	 * Update poll option order
 	 *
@@ -231,7 +234,7 @@ class Poll_options_m extends MY_Model {
 	public function option_order($poll_id, $poll_option_id, $order)
 	{
 		// Make sure this poll option exists 
-		if ($this->poll_option_exists($poll_id, $poll_option_id))
+		if ($this->check_option_exists($poll_id, $poll_option_id))
 		{
 			$data = array(
 				'`order`' => (int)$order
@@ -241,16 +244,12 @@ class Poll_options_m extends MY_Model {
 			$this->db
 				->where('id', $poll_option_id)
 				->update('poll_options', $data);
-			
-			
+
 			// Did this query affect any rows?
 			return $this->db->affected_rows() > 0 ? TRUE : FALSE; 
 		}
-		// If this poll option does not exist
-		else
-		{
-			return FALSE;
-		}
+
+		return FALSE;
 	} 
 
 	/**
@@ -268,13 +267,13 @@ class Poll_options_m extends MY_Model {
 		foreach ($options as $option_id => $option)
 		{
 			// Get the option title
-			$option_title = $option['title'];
+			$option_title = isset($option['title']) ? $option['title'] : '';
 
 			// Get option type (default to "defined")
-			$option_type = $option['type'] == 'other' ? 'other' : 'defined';
+			$option_type = ( isset($option['type']) AND in_array($option['type'], self::$types) ) ? $option['type'] : self::TYPE_DEFINED;
 
 			// If this poll option exists
-			if ( $this->poll_option_exists($poll_id, $option_id) )
+			if ( $this->check_option_exists($poll_id, $option_id) )
 			{
 				// If the title is blank (the user wants to delete this option)
 				if ($option_title === '')
