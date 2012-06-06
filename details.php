@@ -2,7 +2,8 @@
 
 class Module_Polls extends Module {
 
-	public $version = '0.9';
+	public $version = '1.0';
+	const MIN_PHP_VERSION = '5.3.0';
 
 	/**
 	 * Module information
@@ -32,6 +33,22 @@ class Module_Polls extends Module {
 	}
 
 	/**
+	 * Check the current version of PHP and thow an error if it's not good enough
+	 *
+	 * @access private
+	 * @return boolean
+	 */
+	private function check_php_version()
+	{
+		// If current version of PHP is not up snuff
+		if ( version_compare(PHP_VERSION, self::MIN_PHP_VERSION) < 0 )
+		{
+			show_error('This addon requires PHP version ' . self::MIN_PHP_VERSION . ' or higher.');
+			return FALSE;
+		}
+	}
+
+	/**
 	 * Install module
 	 *
 	 * @access public
@@ -39,6 +56,8 @@ class Module_Polls extends Module {
 	 */
 	public function install()
 	{
+		$this->check_php_version();
+
 		// Make sure all tables are gone first
 		$this->uninstall();
 
@@ -84,7 +103,7 @@ class Module_Polls extends Module {
 			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 			`parent_id` smallint(11) unsigned NOT NULL,
 			`text` tinytext NOT NULL,
-			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			`created` int(16) NOT NULL,
 			PRIMARY KEY (`id`),
 			KEY `parent_id` (`parent_id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -168,6 +187,8 @@ class Module_Polls extends Module {
 	 */
 	public function upgrade($old_version)
 	{
+		$this->check_php_version();
+
 		// Start transaction
 		$this->db->trans_start();
 
@@ -238,7 +259,6 @@ class Module_Polls extends Module {
 			");
 		}
 
-
 		// If less than version 0.8
 		if ($old_version < '0.8')
 		{
@@ -250,6 +270,14 @@ class Module_Polls extends Module {
 			$this->db->query("RENAME TABLE  `poll_options` TO  `" . $this->db->dbprefix('poll_options') . "`");
 			$this->db->query("RENAME TABLE  `poll_other_votes` TO  `" . $this->db->dbprefix('poll_other_votes') . "`");
 			$this->db->query("RENAME TABLE  `poll_voters` TO  `" . $this->db->dbprefix('poll_voters') . "`");
+		}
+
+		// Versions less than 1.0 had a TIMESTAMP type for poll_other_options (makes more sense IMO, but everything else in PyroCMS is using UNIX timestamps)
+		if ($old_version < '1.0')
+		{
+			$this->db->query("
+				ALTER TABLE `" . $this->db->dbprefix('poll_other_votes') . "` CHANGE `created` `created` INT(16) NOT NULL
+			");
 		}
 
 		// End transaction

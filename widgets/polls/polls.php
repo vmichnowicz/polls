@@ -34,7 +34,7 @@ class Widget_Polls extends Widgets {
 		$poll_id = $options['poll_id'];
 		
 		// Get poll data
-		$data = $this->polls_m->get_poll_by_id($poll_id);
+		$data = $this->polls_m->retrieve_poll($poll_id);
 		
 		// Has user alread voted in this poll?
 		$data['already_voted'] = $this->poll_voters_m->already_voted($poll_id);
@@ -43,7 +43,7 @@ class Widget_Polls extends Widgets {
 		$data['input_type'] = $data['type'] == 'single' ? 'radio' : 'checkbox';
 		
 		// Get options
-		$data['poll_options'] = $this->poll_options_m->get_all_where_poll_id($poll_id);
+		$data['poll_options'] = $this->poll_options_m->retrieve_poll_options($poll_id);
 		
 		// Get total votes
 		$data['total_votes'] = $this->poll_options_m->get_total_votes($poll_id);
@@ -55,7 +55,7 @@ class Widget_Polls extends Widgets {
 	public function form()
 	{
 		// Get all polls
-		$polls = $this->polls_m->get_all();
+		$polls = $this->polls_m->retrieve_polls();
 		return array('polls' => $polls);
 	}
 	

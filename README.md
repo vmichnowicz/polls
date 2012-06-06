@@ -10,6 +10,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 ## Change List
 
+### Version 1.0
+
+* Now works with PyroCMS version 2.1.1
+* Minor database update
+* Addon now requires PHP 5.3 or greater
+
 ### Version 0.9
 
 * Fixed small bug where module did not work at all and was totally busted

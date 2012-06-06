@@ -7,7 +7,7 @@
  * @category Modules
  */
 class Poll_voters_m extends MY_Model {
-	
+
 	/**
 	 * Constructor method
 	 *
@@ -19,7 +19,7 @@ class Poll_voters_m extends MY_Model {
 		// Call the parent's constructor
 		parent::__construct();
 	}
-	
+
 	/**
 	 * Record user details in database
 	 * 
@@ -38,10 +38,10 @@ class Poll_voters_m extends MY_Model {
 			'ip_address' 	=> $this->session->userdata('ip_address'),
 			'timestamp' 	=> time()
 		);
-		
+
 		$this->db->insert('poll_voters', $data);
 	}
-	
+
 	/**
 	 * Has current user already voted in this poll?
 	 *
@@ -54,18 +54,17 @@ class Poll_voters_m extends MY_Model {
 		// IP address are considered unique for one week
 		$expire = 604800;
 		$now = time();
-		
+
 		// First, let's see if we can find this poll in the userdata
 		if ( $this->session->userdata('poll_' . $poll_id) )
 		{
 			return TRUE;
 		}
-		
+
 		$user_id = $this->ion_auth->logged_in() ? $this->session->userdata('user_id') : NULL;
 		$session_id = $this->session->userdata('session_id');;
 		$ip_address = $this->session->userdata('ip_address');
-		$current_time = time();
-		
+
 		/*
 		 * Get all poll voters that have voted in a particular poll
 		 * 
@@ -83,7 +82,7 @@ class Poll_voters_m extends MY_Model {
 					(ip_address = '$ip_address' AND timestamp + $expire < $now)
 				)
 		");
-		
+
 		return $query->num_rows() > 0 ? TRUE : FALSE;
 	}
 

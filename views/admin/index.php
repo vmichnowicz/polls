@@ -25,10 +25,10 @@
 						<td><?php echo form_checkbox('action_to[]', $poll['id']); ?></td>
 						<td><?php echo $poll['title']; ?></td>
 						<td><?php echo count($poll['options']); ?></td>
-						<td><?php echo ($poll['open_date']) ? date('M j, Y', $poll['open_date']) : '&nbsp'; ?></td>
-						<td><?php echo ($poll['close_date']) ? date('M j, Y', $poll['close_date']) : '&nbsp'; ?></td>
-						<td><?php echo date('M j, Y', $poll['created']); ?></td>
-						<td><?php echo ($poll['last_updated']) ? date('M j, Y', $poll['last_updated']) : '&nbsp'; ?></td>
+						<td><?php echo ($poll['open_date']) instanceof DateTime ? $poll['open_date']->format('F jS, Y') : '&nbsp'; ?></td>
+						<td><?php echo ($poll['close_date']) instanceof DateTime ? $poll['open_date']->format('F jS, Y') : '&nbsp'; ?></td>
+						<td><?php echo $poll['created'] instanceof DateTime ? $poll['created']->format('F jS, Y') : '&nbsp'; ?></td>
+						<td><?php echo ($poll['last_updated']) instanceof DateTime ? $poll['open_date']->format('F jS, Y') : '&nbsp'; ?></td>
 						<td>
 							<?php echo anchor('polls/' . $poll['slug'], lang('polls.view_label'), array('class' => 'button small')); ?>
 							<?php echo anchor('admin/polls/manage/' . $poll['id'], lang('polls.manage_label'), array('class' => 'button small')); ?>
