@@ -26,6 +26,7 @@ jQuery(document).ready(function($) {
 	// Sort options on page load along the "y" axis
 	$('#options').sortable({
 		axis: 'y',
+		handle: '.move-handle',
 		update: function() {
 			sort();
 		}

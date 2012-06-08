@@ -23,15 +23,10 @@
 					<span class="required-icon tooltip">Required</span>
 				</li>
 
-				<li class="odd description">
-					<label for="description"><?php echo lang('polls.description_label'); ?></label>
-					<?php echo form_textarea(array('id'=>'description', 'name'=>'description', 'value' => $poll['description'], 'rows' => 10, 'class' => 'wysiwyg-simple')); ?>
-				</li>
+				<li id="section_options" class="odd">
+					<label><?php echo lang('polls.options_label'); ?></label>
 
-				<li id="section_options" class="even">
-					<h4><?php echo lang('polls.options_label'); ?></h4>
-
-					<p class="alert warning" style="float: none; clear: both;">
+					<p class="alert warning" style="float: none; clear: both; width: auto;">
 						<?php echo lang('polls.options_info'); ?>
 					</p>
 
@@ -46,13 +41,14 @@
 						</li>
 					</ul>
 
-					<ul id="options" class="sortable">
+					<ul id="options">
 						<?php if ( isset($poll['options']) ): ?>
 							<?php foreach($poll['options'] as $option): ?>
 								<?php if ($option !== ''): ?>
 									<li>
 										<?php echo form_dropdown('options[' . $option['id'] . '][type]', array('defined'=>lang('polls.defined'), 'other'=>lang('polls.other')), $option['type'], 'id=""options'); ?>
 										<input type="text" name="options[<?php echo $option['id']; ?>][title]" value="<?php echo $option['title']; ?>" />
+										<span class="move-handle"></span>
 									</li>
 								<?php endif; ?>
 							<?php endforeach; ?>
@@ -61,9 +57,14 @@
 
 				</li>
 
+				<li class="even description">
+					<label for="description"><?php echo lang('polls.description_label'); ?></label>
+					<?php echo form_textarea(array('id'=>'description', 'name'=>'description', 'value' => $poll['description'], 'rows' => 10, 'class' => 'wysiwyg-simple')); ?>
+				</li>
+
 				<li class="odd">
 					<label for="type"><?php echo lang('polls.type_label'); ?></label>
-					<p class="alert warning" style="float: none; clear: both;">
+					<p class="alert warning" style="float: none; clear: both; width: auto;">
 						<?php echo lang('polls.type_info'); ?>
 					</p>
 					<?php echo form_dropdown('type', array('single' => lang('polls.single'), 'multiple' => lang('polls.multiple')), $poll['type'], 'id="type"'); ?>

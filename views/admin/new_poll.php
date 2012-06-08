@@ -20,14 +20,9 @@
 					<span class="required-icon tooltip">Required</span>
 				</li>
 
-				<li class="odd description">
-					<label for="description"><?php echo lang('polls.description_label'); ?></label>
-					<?php echo form_textarea(array('id'=>'description', 'name'=>'description', 'value' => set_value('description'), 'rows' => 10, 'class' => 'wysiwyg-simple')); ?>
-				</li>
-
-				<li class="even">
-					<h4><?php echo lang('polls.options_label'); ?></h4>
-					<p class="alert warning" style="float: none; clear: both;">
+				<li class="odd">
+					<label><?php echo lang('polls.options_label'); ?></label>
+					<p class="alert warning" style="float: none; clear: both; width: auto;">
 						<?php echo lang('polls.options_info'); ?>
 					</p>
 					<ul id="new_option">
@@ -58,9 +53,14 @@
 					</ul>
 				</li>
 
+				<li class="even description">
+					<label for="description"><?php echo lang('polls.description_label'); ?></label>
+					<?php echo form_textarea(array('id'=>'description', 'name'=>'description', 'value' => set_value('description'), 'rows' => 10, 'class' => 'wysiwyg-simple')); ?>
+				</li>
+
 				<li class="odd">
 					<label for="type"><?php echo lang('polls.type_label'); ?></label>
-					<p class="alert warning" style="float: none; clear: both;">
+					<p class="alert warning" style="float: none; clear: both; width: auto;">
 						<?php echo lang('polls.type_info'); ?>
 					</p>
 					<?php echo form_dropdown('type', array('single'=>lang('polls.single'), 'multiple'=>lang('polls.multiple')), set_value('type'), 'id="type"'); ?>

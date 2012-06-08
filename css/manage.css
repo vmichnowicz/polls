@@ -1,12 +1,1 @@
-#options li {
-	padding-right: 30px;
-}
-
-.ui-sortable-helper {
-	border: 1px dashed #ff6900;
-	padding: 14px 29px 14px 7px !important;
-}
-
-#options li:hover {
-	background: #fff url(../img/drag.png) no-repeat 98% 50%;
-}
+span.move-handle { float: right; margin-right: 6px; width: 18px; height: 18px; cursor: move; background: url(../../../../../system/cms/themes/pyrocms/img/icons/drag_handle.gif) no-repeat; }
