@@ -1,5 +1,5 @@
 <section class="title">
-	<h3><?php echo lang('polls.polls'); ?></h3>
+	<h4><?php echo lang('polls.polls'); ?></h4>
 </section>
 
 <section class="item">

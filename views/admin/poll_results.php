@@ -1,5 +1,5 @@
 <section class="title">
-	<h3><?php echo $poll['title']; ?> <em>(<?php echo $total_votes; ?> total votes)</em></h3>
+	<h4><?php echo $poll['title']; ?> <em>(<?php echo $total_votes; ?> total votes)</em></h4>
 </section>
 
 <section class="item">
@@ -17,7 +17,7 @@
 					<?php if (count($option['other']) > 0): ?>
 						<ul class="other">
 							<?php foreach($option['other'] as $other): ?>
-								<li><?php echo $other['text']; ?> <em>&mdash; <?php echo date('l, F jS, Y', $other['created']); ?></em></li>
+								<li><?php echo $other['text']; ?> <em>&mdash; <?php echo $other['created'] instanceof DateTime ? $poll['created']->format('Y-m-d') : NULL ; ?></em></li>
 							<?php endforeach; ?>
 						</ul>
 					<?php endif; ?>

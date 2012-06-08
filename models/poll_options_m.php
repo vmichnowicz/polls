@@ -46,7 +46,7 @@ class Poll_options_m extends MY_Model {
 				{
 					foreach ($q->result() as $r)
 					{
-						$other[ (int) $r->id] = array(
+						$other[ (int) $r->id ] = array(
 							'id' => (int)$r->id,
 							'text' => htmlentities($r->text, ENT_QUOTES, 'UTF-8'), // Convert all applicable characters to HTML entities
 							'created' => $r->created ? DateTime::createFromFormat('U', $r->created) : NULL
@@ -211,7 +211,8 @@ class Poll_options_m extends MY_Model {
 		{
 			$data = array(
 				'parent_id' => $poll_option_id,
-				'text' 		=> $poll_other_vote
+				'text' 		=> $poll_other_vote,
+				'created'	=> time()
 			);
 
 			$this->db->insert('poll_other_votes', $data);
