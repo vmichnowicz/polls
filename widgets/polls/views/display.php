@@ -41,10 +41,14 @@
 					<div style="width: <?php echo $option['votes'] > 0 ? round( ($option['votes'] / $total_votes * 100), 1) : '0'; ?>%;">
 						<?php echo $option['votes'] > 0 ? round( ($option['votes'] / $total_votes * 100), 1) : '0'; ?>%
 					</div>
-					<?php echo $total_votes; ?>
 				</li>
 			<?php endforeach; ?>
 		</ul>
+
+		<div class="total_votes">
+			<?php echo lang('polls.total_votes') ?>: <?php echo $total_votes ?>
+		</div>
+
 	<?php endif; ?>
 
 <?php endif; ?>
