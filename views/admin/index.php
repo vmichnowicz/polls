@@ -26,12 +26,12 @@
 						<td><?php echo $poll['title']; ?></td>
 						<td><?php echo count($poll['options']); ?></td>
 						<td><?php echo ($poll['open_date']) instanceof DateTime ? $poll['open_date']->format('F jS, Y') : '&nbsp'; ?></td>
-						<td><?php echo ($poll['close_date']) instanceof DateTime ? $poll['open_date']->format('F jS, Y') : '&nbsp'; ?></td>
+						<td><?php echo ($poll['close_date']) instanceof DateTime ? $poll['close_date']->format('F jS, Y') : '&nbsp'; ?></td>
 						<td><?php echo $poll['created'] instanceof DateTime ? $poll['created']->format('F jS, Y') : '&nbsp'; ?></td>
-						<td><?php echo ($poll['last_updated']) instanceof DateTime ? $poll['open_date']->format('F jS, Y') : '&nbsp'; ?></td>
+						<td><?php echo ($poll['last_updated']) instanceof DateTime ? $poll['last_updated']->format('F jS, Y') : '&nbsp'; ?></td>
 						<td>
 							<?php echo anchor('polls/' . $poll['slug'], lang('polls.view_label'), array('class' => 'button small')); ?>
-							<?php echo anchor('admin/polls/manage/' . $poll['id'], lang('polls.manage_label'), array('class' => 'button small')); ?>
+							<?php echo anchor('admin/polls/update/' . $poll['id'], lang('polls.update_label'), array('class' => 'button small')); ?>
 							<?php echo anchor('admin/polls/results/' . $poll['id'], lang('polls.results_label'), array('class' => 'button small')); ?>
 							<?php echo anchor('admin/polls/delete/' . $poll['id'], lang('polls.delete_label'), array('class'=>'button small confirm')); ?>
 						</td>

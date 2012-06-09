@@ -1,5 +1,5 @@
 <section class="title">
-	<h4><?php echo lang('polls.manage_label'); ?></h4>
+	<h4><?php echo lang('polls.update_label'); ?></h4>
 </section>
 
 <section class="item form_inputs">
@@ -93,6 +93,11 @@
 				<li class="even">
 					<label for="members_only"><?php echo lang('polls.members_only_label'); ?></label>
 					<?php echo form_dropdown('members_only', array('1'=>lang('polls.yes'), '0'=>lang('polls.no')), $poll['members_only'], 'id="members_only"'); ?>
+				</li>
+
+				<li class="odd">
+					<label for="active"><?php echo lang('polls.active_label'); ?></label>
+					<?php echo form_dropdown('active', array('1'=>lang('polls.yes'), '0'=>lang('polls.no')), $poll['active'], 'id="active"'); ?>
 				</li>
 
 			</ul>

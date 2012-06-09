@@ -15,13 +15,16 @@ class Polls_m extends MY_Model {
 	/**
 	 * Get all polls
 	 *
-	 * Optionally get an individual poll by providing a poll ID.
+	 * Optionallym get an individual poll by providing a poll ID. We can also
+	 * only get active polls, however, by default both active and inactive
+	 * polls are retrieved.
 	 *
 	 * @access public
-	 * @param int
+	 * @param bool			By default we will return both active and inactive polls
+	 * @param int			Optionally, only retrieve an individual poll
 	 * @return array
 	 */
-	public function retrieve_polls($id = NULL)
+	public function retrieve_polls($only_active = FALSE, $id = NULL)
 	{
 		$return = array();
 
@@ -29,9 +32,13 @@ class Polls_m extends MY_Model {
 		if ( isset($id) AND ( is_int($id) OR ctype_digit($id) ) )
 		{
 			// Get only this poll
-			$this->db
-				->where('id', $id)
-				->limit(1);
+			$this->db->where('id', $id)->limit(1);
+		}
+
+		// If we only want to bring back active polls
+		if ($only_active === TRUE)
+		{
+			$this->db->where('active', 1);
 		}
 
 		$query = $this->db->get('polls');
@@ -81,7 +88,8 @@ class Polls_m extends MY_Model {
 					'type' 				=> $row->type,
 					'multiple_votes'	=> (bool)$row->multiple_votes,
 					'comments_enabled' 	=> (bool)$row->comments_enabled,
-					'members_only' 		=> (bool)$row->members_only
+					'members_only' 		=> (bool)$row->members_only,
+					'active'			=> (bool)$row->active
 				);
 			}
 		}
@@ -94,12 +102,13 @@ class Polls_m extends MY_Model {
 	 * Get an individual poll
 	 *
 	 * @access public
-	 * @param int
+	 * @param int			Poll ID
+	 * @param boolean		By default we shall get both active and inactive polls
 	 * @return array|null
 	 */
-	public function retrieve_poll($id)
+	public function retrieve_poll($id, $only_active = FALSE)
 	{
-		$poll = $this->retrieve_polls($id);
+		$poll = $this->retrieve_polls($only_active, $id);
 		return ( is_array($poll) AND count($poll) === 1 ) ? array_shift($poll) : NULL;
 	}
 
@@ -135,7 +144,7 @@ class Polls_m extends MY_Model {
 			->limit(1)
 			->get('polls');
 
-		return $query->num_rows() > 0 ? $query->row()->id : FALSE;
+		return $query->num_rows() > 0 ? (int) $query->row()->id : FALSE;
 	}
 
 	/**
@@ -151,9 +160,9 @@ class Polls_m extends MY_Model {
 	 * @param boolean		Multiple votes
 	 * @param boolean		Comments enabled
 	 * @param boolean		Members only
-	 * @return bool
+	 * @return int|boolean
 	 */
-	public function insert_poll($title, $slug, $description = '', DateTime $open_date = NULL, DateTime $close_date = NULL, $type = self::TYPE_SINGLE, $multiple_votes = FALSE, $comments_enabled = FALSE, $members_only = FALSE)
+	public function insert_poll($title, $slug, $description = '', DateTime $open_date = NULL, DateTime $close_date = NULL, $type = self::TYPE_SINGLE, $multiple_votes = FALSE, $comments_enabled = FALSE, $members_only = FALSE, $active = FALSE)
 	{
 		// Prep data for insertion into the database
 		$data = array(
@@ -166,13 +175,14 @@ class Polls_m extends MY_Model {
 			'multiple_votes'	=> (bool)$multiple_votes,
 			'comments_enabled'	=> (bool)$comments_enabled,
 			'members_only' 		=> (bool)$members_only,
+			'active'			=> (bool)$active,
 			'created' 			=> time()
 		);
 
 		// Insert that data
 		$this->db->insert('polls', $data);
 
-		return $this->db->affected_rows() > 0 ? TRUE : FALSE;
+		return $this->db->affected_rows() > 0 ? $this->db->insert_id() : FALSE;
 	}
 
 	/**
@@ -208,7 +218,7 @@ class Polls_m extends MY_Model {
 	 * @param boolean		Members only
 	 * @return bool
 	 */
-	public function update_poll($id, $title, $slug, $description = '', DateTime $open_date = NULL, DateTime $close_date = NULL, $type = self::TYPE_SINGLE, $multiple_votes = FALSE, $comments_enabled = FALSE, $members_only = FALSE)
+	public function update_poll($id, $title, $slug, $description = '', DateTime $open_date = NULL, DateTime $close_date = NULL, $type = self::TYPE_SINGLE, $multiple_votes = FALSE, $comments_enabled = FALSE, $members_only = FALSE, $active = FALSE)
 	{
 		// Get the poll data
 		$data = array(
@@ -221,6 +231,7 @@ class Polls_m extends MY_Model {
 			'multiple_votes' 	=> (bool)$multiple_votes,
 			'comments_enabled' 	=> (bool)$comments_enabled,
 			'members_only' 		=> (bool)$members_only,
+			'active'			=> (bool)$active,
 			'last_updated' 		=> time()
 		);
 

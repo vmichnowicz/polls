@@ -1,13 +1,6 @@
 jQuery(document).ready(function($) {
 	
-	// Automate URL slug
-	// http://stackoverflow.com/questions/1053902/how-to-convert-a-title-to-a-url-slug-in-jquery/1054592#1054592
-	$('#title').keyup(function(){
-		var text = $(this).val();
-		text = text.toLowerCase();
-		text = text.replace(/[^a-zA-Z0-9]+/g,'-');
-		$("#slug").val(text);        
-	});
+	
 	
 	// Keep track of how many poll options we have
 	var option_count = 0;
@@ -53,16 +46,5 @@ jQuery(document).ready(function($) {
 			alert('Please enter a poll option title.');
 		}
 	}
-	
-	// 
-	$('#add_new_option').click(function() {
-		add_option();
-	});
-	
-	$('#new_option_title').keyup(function(e) {
-		if (e.which == 13) {
-			add_option();
-		}
-	});
 	
 });
