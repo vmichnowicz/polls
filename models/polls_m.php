@@ -134,7 +134,7 @@ class Polls_m extends MY_Model {
 	 *
 	 * @access public
 	 * @param int poll slug
-	 * @return mixed
+	 * @return int|bool
 	 */		
 	public function get_poll_id_from_slug($slug)
 	{
@@ -160,7 +160,7 @@ class Polls_m extends MY_Model {
 	 * @param boolean		Multiple votes
 	 * @param boolean		Comments enabled
 	 * @param boolean		Members only
-	 * @return int|boolean
+	 * @return int|bool
 	 */
 	public function insert_poll($title, $slug, $description = '', DateTime $open_date = NULL, DateTime $close_date = NULL, $type = self::TYPE_SINGLE, $multiple_votes = FALSE, $comments_enabled = FALSE, $members_only = FALSE, $active = FALSE)
 	{
@@ -211,11 +211,11 @@ class Polls_m extends MY_Model {
 	 * @param string		Slug
 	 * @param string		Description
 	 * @param DateTime		Open date
-	 * @param boolean		MultipleTime Close date
+	 * @param bool			MultipleTime Close date
 	 * @param string		Type
-	 * @param boolean		Multiple votes
-	 * @param boolean		Comments enabled
-	 * @param boolean		Members only
+	 * @param bool			Multiple votes
+	 * @param bool			Comments enabled
+	 * @param bool			Members only
 	 * @return bool
 	 */
 	public function update_poll($id, $title, $slug, $description = '', DateTime $open_date = NULL, DateTime $close_date = NULL, $type = self::TYPE_SINGLE, $multiple_votes = FALSE, $comments_enabled = FALSE, $members_only = FALSE, $active = FALSE)

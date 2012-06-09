@@ -20,7 +20,7 @@ class Poll_options_m extends MY_Model {
 	 *
 	 * @access public
 	 * @param int 			ID of the poll
-	 * @return mixed
+	 * @return array
 	 */
 	public function retrieve_poll_options($id)
 	{
@@ -71,11 +71,11 @@ class Poll_options_m extends MY_Model {
 	 * Insert an individual poll option
 	 *
 	 * @access public
-	 * @param type $poll_id
-	 * @param type $type
-	 * @param type $title
-	 * @param type $order
-	 * @return int
+	 * @param type			Poll ID
+	 * @param string		Option type "defined" or "other"
+	 * @param string		Option title
+	 * @param int			Option order
+	 * @return int|bool
 	 */
 	public function insert_option($poll_id, $type, $title, $order = NULL)
 	{
@@ -314,7 +314,7 @@ class Poll_options_m extends MY_Model {
 
 		$this->db->trans_complete();
 
-		return $this->db->trans_status() ? TRUE : FALSE;
+		return $this->db->trans_status();
 	}
 
 }

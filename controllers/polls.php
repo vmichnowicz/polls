@@ -50,7 +50,10 @@ class Polls extends Public_Controller {
 	 * See if the current user is allowed to vote in a provided poll
 	 *
 	 * @access private
-	 * @param array			Poll data array
+	 * @param int			Poll ID
+	 * @param bool			Is this poll open?
+	 * @param bool			Is this poll only for registered members?
+	 * @param bool			Does this poll allow multiple votes?
 	 * @return bool
 	 */
 	private function can_vote($poll_id, $is_open, $members_only, $multiple_votes)

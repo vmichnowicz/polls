@@ -26,7 +26,7 @@ class Poll_voters_m extends MY_Model {
 	 * Make sure the same user does not vote multiple times in the same poll (unless we allow it!)
 	 *
 	 * @access public
-	 * @param int poll ID
+	 * @param int			Poll ID
 	 * @return void
 	 */		
 	public function insert_voter($poll_id)
@@ -48,7 +48,7 @@ class Poll_voters_m extends MY_Model {
 	 * Has current user already voted in this poll?
 	 *
 	 * @access public
-	 * @param int poll ID
+	 * @param int			Poll ID
 	 * @return null
 	 */	
 	public function already_voted($poll_id)

@@ -357,7 +357,7 @@ class Admin extends Admin_Controller {
 	 *
 	 * @access public
 	 * @param int 			The ID of the poll
-	 * @return null
+	 * @return void
 	 */
 	public function ajax_update_order($poll_id)
 	{

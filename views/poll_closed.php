@@ -2,7 +2,7 @@
 
 <p><?php echo $poll['description']; ?></p>
 
-<?php if (count($poll['options']) > 0): ?>
+<?php if ( is_array($poll['options']) AND count($poll['options']) > 0): ?>
 	<ul class="poll_options">
 		<?php foreach($poll['options'] as $option): ?>
 			<li<?php echo in_array($option['id'], $user_vote) ? ' class="user_vote"' : NULL; ?>>
