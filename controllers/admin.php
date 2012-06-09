@@ -110,7 +110,10 @@ class Admin extends Admin_Controller {
 		}
 
 		// Load the view (and pass in the poll data)
-		$this->template->title($this->module_details['name'])->build('admin/index', array('polls' => $polls));
+		$this->template
+			->append_css('module::admin.css')
+			->title($this->module_details['name'])
+			->build('admin/index', array('polls' => $polls));
 	}
 
 	/**

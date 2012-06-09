@@ -36,6 +36,7 @@ $lang['polls.no_options_submitted'] 	= 'No poll options submitted.'; // Needs to
 
 // Polls overview headers
 $lang['polls.title']					= 'Poll titel';
+$lang['polls.active']					= 'Active'; // Needs to be translated
 $lang['polls.num_options']				= 'Opties';
 $lang['polls.open_date']				= 'Datum geopend';
 $lang['polls.close_date']				= 'Datum gesloten';

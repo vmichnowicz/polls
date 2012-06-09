@@ -11,6 +11,7 @@
 					<tr>
 						<th><?php echo form_checkbox(array('name' => 'action_to_all', 'class' => 'check-all'));?></th>
 						<th><?php echo lang('polls.title'); ?></th>
+						<th><?php echo lang('polls.active'); ?></th>
 						<th><?php echo lang('polls.num_options'); ?></th>
 						<th><?php echo lang('polls.open_date'); ?></th>
 						<th><?php echo lang('polls.close_date'); ?></th>
@@ -24,6 +25,7 @@
 					<tr>
 						<td><?php echo form_checkbox('action_to[]', $poll['id']); ?></td>
 						<td><?php echo $poll['title']; ?></td>
+						<td class="active <?php echo $poll['active'] ? 'yes' : 'no'; ?>"><?php echo $poll['active'] ? lang('polls.yes') : lang('polls.no'); ?></td>
 						<td><?php echo count($poll['options']); ?></td>
 						<td><?php echo ($poll['open_date']) instanceof DateTime ? $poll['open_date']->format('F jS, Y') : '&nbsp'; ?></td>
 						<td><?php echo ($poll['close_date']) instanceof DateTime ? $poll['close_date']->format('F jS, Y') : '&nbsp'; ?></td>

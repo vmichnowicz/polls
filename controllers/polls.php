@@ -92,9 +92,10 @@ class Polls extends Public_Controller {
 	{
 		// Get poll ID from the provided slug
 		$poll_id = $this->polls_m->get_poll_id_from_slug($slug);
+		$poll = $poll_id ? $this->polls_m->retrieve_poll($poll_id, TRUE) : NULL;
 
 		// If this poll exists
-		if ($poll_id)
+		if ( ! empty($poll_id) AND ! empty($poll) )
 		{
 			// Get the data for this particular [active] poll
 			$poll = $this->polls_m->retrieve_poll($poll_id, TRUE);
