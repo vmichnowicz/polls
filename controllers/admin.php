@@ -32,7 +32,6 @@ class Admin extends Admin_Controller {
 		$this->load->library('form_validation');
 		$this->load->model('polls_m');
 		$this->load->model('poll_options_m');
-		$this->load->helper('poll_date');
 
 		// Set the validation rules for creating and modifying a poll
 		$this->poll_validation_rules = array(

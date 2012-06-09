@@ -13,7 +13,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 ### Version 1.0
 
 * Now works with PyroCMS version 2.1.1
-* MySQL database updates
+* Longer poll option text (now can be up to 256 characters)
 * Polls can now be "enabled" or "disabled"
 * Addon now requires PHP 5.3 or greater
 
