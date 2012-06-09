@@ -5,5 +5,6 @@
  *
  * @author Victor Michnowicz
  * @category Modules
+ * @todo Rember not to remove this file...
  */
 class Poll_m extends MY_Model {}

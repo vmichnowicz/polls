@@ -1,6 +1,6 @@
-<h2 id="page_title"><?php echo lang('polls.polls'); ?></h2>
+<h2><?php echo lang('polls.polls'); ?></h2>
 
-<?php if ($polls): ?>
+<?php if ( isset($polls) AND is_array($polls) ): ?>
 	<ul class="poll_options">
 		<?php foreach($polls as $poll): ?>
 			<li>

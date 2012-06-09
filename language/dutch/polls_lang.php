@@ -22,9 +22,11 @@ $lang['polls.install_success']			= 'De Poll module is geinstalleerd.';
 
 // Error notifications
 $lang['polls.create_error']				= 'De poll kon niet worden aangemaakt.';
+$lang['polls.not_exist_error']			= 'This poll does not exist.'; // Needs to be translated
 $lang['polls.invalid_date']				= 'Ongeldige datum ingevoerd';
 $lang['polls.exists_error']				= 'De opgegeven poll bestaat niet.';
 $lang['polls.update_error']				= 'De poll kon niet worden bijgewerkt.';
+$lang['polls.delete_error']				= 'This poll could not be deleted.'; // Needs to be translated
 $lang['polls.id_error']					= 'Er zijn geen ID\'s opgegeven.';
 $lang['polls.no_poll_options_error']	= 'Er zijn geen opties voor deze poll';
 $lang['polls.no_polls_error'] 			= 'Er zijn nog geen polls aangemaakt.';
@@ -34,6 +36,7 @@ $lang['polls.no_options_submitted'] 	= 'No poll options submitted.'; // Needs to
 
 // Polls overview headers
 $lang['polls.title']					= 'Poll titel';
+$lang['polls.active']					= 'Active'; // Needs to be translated
 $lang['polls.num_options']				= 'Opties';
 $lang['polls.open_date']				= 'Datum geopend';
 $lang['polls.close_date']				= 'Datum gesloten';
@@ -42,7 +45,7 @@ $lang['polls.last_updated']				= 'Laatst bijgewerkt';
 
 // Polls overview actions
 $lang['polls.view_label']				= 'Poll bekijken';
-$lang['polls.manage_label']				= 'Poll bewerken';
+$lang['polls.update_label']				= 'Poll bewerken';
 $lang['polls.results_label']			= 'Poll resultaten';
 $lang['polls.delete_label']				= 'Poll verwijderen';
 
@@ -54,10 +57,11 @@ $lang['polls.description_label']		= 'Poll omschrijving';
 $lang['polls.options_label']			= 'Poll opties';
 $lang['polls.add_option_label']			= 'Optie toevoegen';
 $lang['polls.multiple_votes_label']		= 'Meerdere stemmen';
-$lang['polls.open_date_label']			= 'Datum geopend (YYYY/MM/DD)';
-$lang['polls.close_date_label']			= 'Datum gesloten (YYYY/MM/DD)';
+$lang['polls.open_date_label']			= 'Datum geopend (YYYY-MM-DD)';
+$lang['polls.close_date_label']			= 'Datum gesloten (YYYY-MM-DD)';
 $lang['polls.comments_label']			= 'Opmerkingen aanzetten';
 $lang['polls.members_only_label']		= 'Alleen leden';
+$lang['polls.active_label']				= 'Active'; // Needs to be translated
 
 // Poll creation and modification info
 $lang['polls.options_info'] 			= 'Een poll optie kan zowel <strong>gedefinieerd</strong> worden of <strong>anders</strong>. Een <strong>gedefinieerde</strong> poll optie laat de gebruiker stemmen op een poll optie die je hebt aangegeven. Een <strong>andere</strong> poll optie laat de gebruiker een tekst invullen voor die bepaalde optie.';

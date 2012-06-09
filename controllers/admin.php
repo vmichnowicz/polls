@@ -32,7 +32,6 @@ class Admin extends Admin_Controller {
 		$this->load->library('form_validation');
 		$this->load->model('polls_m');
 		$this->load->model('poll_options_m');
-		$this->load->helper('poll_date');
 
 		// Set the validation rules for creating and modifying a poll
 		$this->poll_validation_rules = array(
@@ -82,7 +81,7 @@ class Admin extends Admin_Controller {
 				'rules' => 'trim'
 			)
 		);
-		
+
 		// Put those cool buttons at the top of the admin panel
 		$this->template->set_partial('shortcuts', 'admin/partials/shortcuts');
 	}
@@ -96,20 +95,24 @@ class Admin extends Admin_Controller {
 	public function index()
 	{
 		// Get all the polls
-		$data['polls'] = $this->polls_m->get_all();
+		$polls = $this->polls_m->retrieve_polls();
 		
 		// Make sure that we have polls to display
-		if ($data['polls'])
+		if ( is_array($polls) AND count($polls) > 0 )
 		{
 			// For each poll (note the "&," we are assigning reference)
-			foreach ($data['polls'] as &$poll)
+			foreach ($polls as &$poll)
 			{
 				// Add the poll options to our array
-				$poll['options'] = $this->poll_options_m->get_all_where_poll_id($poll['id']);
+				$poll['options'] = $this->poll_options_m->retrieve_poll_options( $poll['id'] );
 			}
 		}
+
 		// Load the view (and pass in the poll data)
-		$this->template->title($this->module_details['name'])->build('admin/index', $data);
+		$this->template
+			->append_css('module::admin.css')
+			->title($this->module_details['name'])
+			->build('admin/index', array('polls' => $polls));
 	}
 
 	/**
@@ -118,98 +121,116 @@ class Admin extends Admin_Controller {
 	 * @access public
 	 * @return void
 	 */
-	public function create()
+	public function insert()
 	{
 		// Set the validation rules
 		$this->form_validation->set_rules($this->poll_validation_rules);
-		
+
 		// If form validation passed
 		if ( $this->form_validation->run() )
 		{
-			
-			// Add the poll AND poll options into the database
-			if ( $this->polls_m->add($_POST) AND $this->poll_options_m->add($this->db->insert_id(), $this->input->post('options')) )
+			$title = $this->input->post('title');
+			$slug = $this->input->post('slug');
+
+			// Insert poll
+			$insert_id = $this->polls_m->insert_poll($title, $slug);
+
+			// If poll was added successfully
+			if ( ! empty($insert_id) )
 			{
-				// Great success! Both the poll and all the poll options were added successfully
 				$this->session->set_flashdata('success', lang('polls.create_success'));
-				redirect('admin/polls');	
+				redirect('admin/polls/update/' . $insert_id);
 			}
-			
-			// We were unable to add the poll and poll options into the database
 			else
 			{
 				$this->session->set_flashdata('error', lang('polls.create_error'));
-				redirect('admin/polls/create');
+				redirect('admin/polls/insert');
 			}
-			
 		}
-		
-		// Get the POST data
-		$data['poll'] = $_POST;	
-		
+
+		$data['poll'] = $this->input->post('poll');
+
 		// Load the view
 		$this->template
 			->append_metadata( $this->load->view('fragments/wysiwyg', $this->data, TRUE) )
-			->append_metadata( js('admin.js', 'polls') )
-			->append_metadata( js('create.js', 'polls') )
+			->append_js('module::admin.js')
 			->title($this->module_details['name'], lang('polls.new_poll_label'))
-			->build('admin/new_poll', $data);
+			->build('admin/insert', $data);
 	}
 
 	/**
-	 * Manage an existing poll
+	 * Update an existing poll
 	 *
 	 * @access public
-	 * @param int			ID of the poll to manage
+	 * @param int			ID of the poll to update
 	 * @return void
 	 */
-	public function manage($id = NULL)
+	public function update($id = NULL)
 	{
 		// Make sure poll exists
-		if ( ! $this->polls_m->poll_exists($id) )
+		if ( empty($id) OR ! $this->polls_m->poll_exists($id) )
 		{
+			$this->session->set_flashdata('error', lang('polls.not_exist_error'));
 			redirect('admin/polls');
 		}
-		
+
 		$this->form_validation->set_rules($this->poll_validation_rules);
-		
+
 		// Get the poll and poll options
-		$poll = $this->polls_m->get_poll_by_id($id);		
-		$options = $this->poll_options_m->get_all_where_poll_id($id);
-		
+		$poll = $this->polls_m->retrieve_poll($id);
+		$options = $this->poll_options_m->retrieve_poll_options($id);
+
 		$poll['options'] = $options;
-		
+
 		$data['poll'] = $poll;
 
 		// If this form validation passed
 		if ( $this->form_validation->run() )
 		{
+			$title = $this->input->post('title');
+			$slug = $this->input->post('slug');
+			$description = $this->input->post('description');
+			$open_date = $this->input->post('open_date') ? DateTime::createFromFormat('Y#m#d', $this->input->post('open_date')) : NULL;
+			$close_date = $this->input->post('close_date') ? DateTime::createFromFormat('Y#m#d', $this->input->post('close_date')) : NULL;
+			$type = $this->input->post('type');
+			$multiple_votes = $this->input->post('multiple_votes');
+			$comments_enabled = $this->input->post('comments_enabled');
+			$members_only = $this->input->post('members_only');
+			$active = $this->input->post('active');
 
-			// Update both the poll and poll options
-			if ( $this->polls_m->update($id, $_POST) AND $this->poll_options_m->update($id, $_POST['options']) )
+			$update_poll = $this->polls_m->update_poll($id, $title, $slug, $description, $open_date, $close_date, $type, $multiple_votes, $comments_enabled, $members_only, $active);
+			$update_options = TRUE; // Default to TRUE (If updating of options fails then this will change to FALSE)
+
+			// Get all poll options
+			$options = $this->input->post('options');
+
+			// We only need to update options if this poll has an array of options (also make sure updating of poll was successful)
+			if ( is_array($options) AND count($options) > 0 AND $update_poll )
+			{
+				$update_options = $this->poll_options_m->update_options($id, $options);
+			}
+
+			if ($update_poll AND $update_options)
 			{
 				$this->session->set_flashdata('success', lang('polls.update_success'));
-				redirect('admin/polls/manage/' . $id);	
+				redirect('admin/polls/update/' . $id);
 			}
-			
+
 			// That update did not go well
 			else
 			{
 				$this->session->set_flashdata('error', lang('polls.update_error'));
-				redirect('admin/polls/manage/' . $id);
+				redirect('admin/polls/update/' . $id);
 			}
-			
 		}
-		
+
 		// Build that thang
 		$this->template
 			->append_metadata( $this->load->view('fragments/wysiwyg', $this->data, TRUE) )
-			->append_metadata( js('admin.js', 'polls') )
-			->append_metadata( js('manage.js', 'polls') )
-			->append_metadata( css('admin.css', 'polls') )
-			->append_metadata( css('manage.css', 'polls') )
+			->append_js('module::admin.js')
+			->append_css('module::admin.css')
 			->title($this->module_details['name'], lang('polls.new_poll_label'))
-			->build('admin/manage_poll', $data);
+			->build('admin/update', $data);
 	}
 
 	/**
@@ -221,18 +242,18 @@ class Admin extends Admin_Controller {
 	 */
 	public function results($id = NULL)
 	{
-		$data['poll'] = $this->polls_m->get_poll_by_id($id);
-		$data['options'] = $this->poll_options_m->get_all_where_poll_id($id);
-		$data['total_votes'] = $this->poll_options_m->get_total_votes($id);
-		
+		$poll = $this->polls_m->retrieve_poll($id);
+		$options = $this->poll_options_m->retrieve_poll_options($id);
+		$total_votes = $this->poll_options_m->get_total_votes($id);
+
 		// Calculate percentages for each poll option
-		if ( ! empty($data['options']))
+		if ( ! empty($options))
 		{
-			foreach ($data['options'] as &$option)
+			foreach ($options as &$option)
 			{
 				if ($option['votes'] > 0)
 				{
-					$option['percent'] = round($option['votes'] / $data['total_votes'] * 100, 1);
+					$option['percent'] = round($option['votes'] / $total_votes * 100, 1);
 				}
 				else
 				{
@@ -240,12 +261,12 @@ class Admin extends Admin_Controller {
 				}
 			}
 		}
-		
+
 		// Build that thang
 		$this->template
-			->append_metadata( css('results.css', 'polls') )
+			->append_css('module::results.css')
 			->title($this->module_details['name'], lang('polls.results_label'))
-			->build('admin/poll_results', $data);
+			->build('admin/results', array('poll' => $poll, 'options' => $options, 'total_votes' => $total_votes));
 	}
 
 	/**
@@ -257,84 +278,65 @@ class Admin extends Admin_Controller {
 	 */
 	public function delete($id = NULL)
 	{
-		$id_array = array();
-
-		// Multiple IDs or just a single one?
-		if ( $_POST )
-		{
-			$id_array = $_POST['action_to'];
-		}
-		else
-		{
-			if ( $id !== NULL )
-			{
-				$id_array[0] = $id;
-			}
-		}
-
-		if ( empty($id_array) )
+		$success = TRUE;
+		$ids = ( isset($id) AND ctype_digit($id) ) ? array($id) : $this->input->post('action_to');
+		
+		if ( empty($ids) OR ! is_array($ids) )
 		{
 			$this->session->set_flashdata('error', lang('polls.id_error'));
 			redirect('admin/polls');
 		}
-		
-		
-		// Loop through each ID
-		foreach ( $id_array as $id)
-		{
-			// Get the poll
-			$poll = $this->polls_m->poll_exists($id);
 
+		// Loop through each ID
+		foreach ($ids as $id)
+		{
 			// Does the poll exist?
-			if ($poll)
+			if ( $this->polls_m->poll_exists($id) )
 			{
 				// Delete this poll
-				if (!$this->polls_m->delete($id) )
+				if ( ! $this->polls_m->delete($id) )
 				{
-					$this->session->set_flashdata('error', 'something did not go well');
+					$success = FALSE;
+					$this->session->set_flashdata('error', lang('polls.delete_error'));
 				}
 			}
 		}
-		
-		$this->session->set_flashdata('success', lang('polls.delete_success'));
+
+		// If no errors in deleting the polls
+		if ($success === TRUE)
+		{
+			$this->session->set_flashdata('success', lang('polls.delete_success'));
+		}
+
 		redirect('admin/polls');
 	}
-	
+
 	/**
 	 * Validate a date (used for CIs form validation)
-	 *
+	 * 
 	 * @access public
-	 * @param string YYYY/MM/DD date string
+	 * @param string YYYY-MM-DD date string
 	 * @return bool
 	 */
 	public function date_check($date)
 	{
 		// If no date was provided, return TRUE
-		if (!$date) {
+		if ($date === NULL OR $date === '')
+		{
 			return TRUE;
 		}
-		
-		// Split up the date
-		$date_exploded = explode('/', $date, 3);
-		
-		// Make sure we are dealing with three chunks
-		if (count($date_exploded) == 3)
+
+		// Method returns FALSE on failure
+		if ( DateTime::createFromFormat('Y#m#d', $date) )
 		{
-			$year = (int)$date_exploded[0];
-			$month = (int)$date_exploded[1];
-			$day = (int)$date_exploded[2];
-			
-			// If the user entered a valid date
-			if(checkdate($month, $day, $year))
-			{
-				return TRUE;
-			}
+			return TRUE;
 		}
-		
+
+		// If we got this far we do not have a valid date
 		$this->form_validation->set_message('date_check', lang('polls.invalid_date') );
 		return FALSE;
 	}
-	
+
 	/**
 	 * Add a poll option
 	 *
@@ -346,16 +348,16 @@ class Admin extends Admin_Controller {
 		$poll_id = $this->input->post('poll_id');
 		$option_type = $this->input->post('new_option_type');
 		$option_title = $this->input->post('new_option_title');
-		
-		return $this->poll_options_m->add_single($poll_id, $option_type, $option_title);
+
+		return $this->poll_options_m->insert_option($poll_id, $option_type, $option_title);
 	}
-	
+
 	/**
 	 * Update poll option order
 	 *
 	 * @access public
 	 * @param int 			The ID of the poll
-	 * @return null
+	 * @return void
 	 */
 	public function ajax_update_order($poll_id)
 	{
@@ -368,5 +370,5 @@ class Admin extends Admin_Controller {
 			}
 		}
 	}
-	
+
 }

@@ -2,8 +2,15 @@
 
 class Module_Polls extends Module {
 
-	public $version = '0.9';
+	public $version = '1.0';
+	const MIN_PHP_VERSION = '5.3.0';
 
+	/**
+	 * Module information
+	 *
+	 * @access public
+	 * @return void
+	 */
 	public function info()
 	{
 		return array(
@@ -19,14 +26,41 @@ class Module_Polls extends Module {
 			'shortcuts' => array(
 				array(
 			 	   'name' => 'polls.new_poll_label',
-				   'uri' => 'admin/polls/create',
+				   'uri' => 'admin/polls/insert',
 				),
 			),
 		);
 	}
 
+	/**
+	 * Check the current version of PHP and thow an error if it's not good enough
+	 *
+	 * @access private
+	 * @return boolean
+	 */
+	private function check_php_version()
+	{
+		// If current version of PHP is not up snuff
+		if ( version_compare(PHP_VERSION, self::MIN_PHP_VERSION) < 0 )
+		{
+			show_error('This addon requires PHP version ' . self::MIN_PHP_VERSION . ' or higher.');
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Install module
+	 *
+	 * @access public
+	 * @return bool
+	 */
 	public function install()
 	{
+		$this->check_php_version();
+
+		// Make sure all tables are gone first
+		$this->uninstall();
+
 		// Start transaction
 		$this->db->trans_start();
 
@@ -45,8 +79,9 @@ class Module_Polls extends Module {
 			`multiple_votes` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			`comments_enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			`members_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
+			`active` tinyint(1) NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`)
-			) ENGINE=InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 
 		// Create poll_options table
@@ -55,12 +90,12 @@ class Module_Polls extends Module {
 			`id` smallint(11) unsigned NOT NULL AUTO_INCREMENT,
 			`poll_id` tinyint(11) unsigned NOT NULL,
 			`type` enum('defined','other') NOT NULL DEFAULT 'defined',
-			`title` varchar(64) NOT NULL,
+			`title` varchar(256) NOT NULL,
 			`order` tinyint(2) unsigned DEFAULT NULL,
 			`votes` mediumint(11) unsigned NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`),
 			KEY `poll_id` (`poll_id`)
-			) ENGINE=InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 
 		// Create poll_other_votes table
@@ -69,10 +104,10 @@ class Module_Polls extends Module {
 			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 			`parent_id` smallint(11) unsigned NOT NULL,
 			`text` tinytext NOT NULL,
-			`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			`created` int(16) NOT NULL,
 			PRIMARY KEY (`id`),
 			KEY `parent_id` (`parent_id`)
-			) ENGINE=InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 
 		// Create poll_voters table
@@ -87,7 +122,7 @@ class Module_Polls extends Module {
 			PRIMARY KEY (`id`),
 			KEY `poll_id` (`poll_id`),
 			KEY `user_id` (`user_id`)
-			) ENGINE=InnoDB;
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 
 		// Referental integrity fo' sho
@@ -125,16 +160,36 @@ class Module_Polls extends Module {
 		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 
+	/**
+	 * Uninstall module
+	 *
+	 * Due to foreign key constraints we must drop tables in a very specific
+	 * order.
+	 *
+	 * @access public
+	 * @return bool
+	 */
 	public function uninstall()
 	{
-		// Drop some tables
-		$this->db->query("DROP TABLE `" . $this->db->dbprefix('poll_voters') . "`, `" . $this->db->dbprefix('poll_other_votes') . "`, `" . $this->db->dbprefix('poll_options') . "`, `" . $this->db->dbprefix('polls') . "`");
+		$this->dbforge->drop_table('poll_voters');
+		$this->dbforge->drop_table('poll_other_votes');
+		$this->dbforge->drop_table('poll_options');
+		$this->dbforge->drop_table('polls');
 		
 		return TRUE;
 	}
 
+	/**
+	 * Upgrade module
+	 *
+	 * @access public
+	 * @param string
+	 * @return bool
+	 */
 	public function upgrade($old_version)
 	{
+		$this->check_php_version();
+
 		// Start transaction
 		$this->db->trans_start();
 
@@ -160,7 +215,7 @@ class Module_Polls extends Module {
 				`created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				PRIMARY KEY (`id`),
 				KEY `parent_id` (`parent_id`)
-				) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 			");
 
 			// Add poll_voters table
@@ -175,7 +230,7 @@ class Module_Polls extends Module {
 				PRIMARY KEY (`id`),
 				KEY `poll_id` (`poll_id`),
 				KEY `user_id` (`user_id`)
-				) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 			");
 
 			// Referental integrity fo' sho
@@ -205,7 +260,6 @@ class Module_Polls extends Module {
 			");
 		}
 
-
 		// If less than version 0.8
 		if ($old_version < '0.8')
 		{
@@ -217,7 +271,24 @@ class Module_Polls extends Module {
 			$this->db->query("RENAME TABLE  `poll_options` TO  `" . $this->db->dbprefix('poll_options') . "`");
 			$this->db->query("RENAME TABLE  `poll_other_votes` TO  `" . $this->db->dbprefix('poll_other_votes') . "`");
 			$this->db->query("RENAME TABLE  `poll_voters` TO  `" . $this->db->dbprefix('poll_voters') . "`");
+		}
 
+		if ($old_version < '1.0')
+		{
+			// Versions less than 1.0 had a TIMESTAMP type for poll_other_options (makes more sense IMO, but everything else in PyroCMS is using UNIX timestamps)
+			$this->db->query("
+				ALTER TABLE `" . $this->db->dbprefix('poll_other_votes') . "` CHANGE `created` `created` INT(16) NOT NULL
+			");
+
+			// Make poll option titles longer
+			$this->db->query("
+				ALTER TABLE `" . $this->db->dbprefix('poll_options') . "` CHANGE `title` `title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+			");
+
+			// Add "active" status for polls
+			$this->db->query("
+				ALTER TABLE `" . $this->db->dbprefix('polls') . "` ADD `active` TINYINT(1) NOT NULL DEFAULT '0'
+			");
 		}
 
 		// End transaction
@@ -227,6 +298,12 @@ class Module_Polls extends Module {
 		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 
+	/**
+	 * Help
+	 *
+	 * @access public
+	 * @return string
+	 */
 	public function help()
 	{
 		return '<a href="https://github.com/vmichnowicz/polls">View Source on Github</a>';

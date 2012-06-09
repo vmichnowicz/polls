@@ -6,22 +6,22 @@
 	<form method="post" action="<?php echo site_url('polls/' . $slug); ?>">
 		<fieldset>
 			<ul class="poll_options">
-				<?php foreach($poll_options as $option): ?>
-					<li>
-						<label for="option_<?php echo $option['id']; ?>">
-							<input type="<?php echo $input_type; ?>" name="options[]" value="<?php echo $option['id']; ?>" id="option_<?php echo $option['id']; ?>" />
-							<span><?php echo $option['title']; ?></span>
-						</label>
-						<?php if ($option['type'] == 'other'): ?>
-							<input type="text" name="other_options[<?php echo $option['id']; ?>]" id="other_option_<?php echo $option['id']; ?>" />
-						<?php endif; ?>
-					</li>
-				<?php endforeach; ?>
+				<?php if ( is_array($poll_options) AND count($poll_options) > 0 ): ?>
+					<?php foreach($poll_options as $option): ?>
+						<li>
+							<label for="option_<?php echo $option['id']; ?>">
+								<input type="<?php echo $input_type; ?>" name="options[]" value="<?php echo $option['id']; ?>" id="option_<?php echo $option['id']; ?>" />
+								<span><?php echo $option['title']; ?></span>
+							</label>
+							<?php if ($option['type'] === 'other'): ?>
+								<input type="text" name="other_options[<?php echo $option['id']; ?>]" id="other_option_<?php echo $option['id']; ?>" />
+							<?php endif; ?>
+						</li>
+					<?php endforeach; ?>
+				<?php endif; ?>
 			</ul>
 			
 			<br />
-			
-			<hr />
 			
 			<input type="hidden" name="session_id" value="<?php echo $this->session->userdata('session_id'); ?>" />
 			
@@ -32,7 +32,7 @@
 <!-- If poll is closed or user has already voted in this poll -->
 <?php else: ?>
 
-	<?php if ($poll_options): ?>
+	<?php if ( is_array($poll_options) AND count($poll_options) > 0 ): ?>
 		<ul>
 			<?php foreach($poll_options as $option): ?>
 				<li>
@@ -41,10 +41,14 @@
 					<div style="width: <?php echo $option['votes'] > 0 ? round( ($option['votes'] / $total_votes * 100), 1) : '0'; ?>%;">
 						<?php echo $option['votes'] > 0 ? round( ($option['votes'] / $total_votes * 100), 1) : '0'; ?>%
 					</div>
-					<?php echo $total_votes; ?>
 				</li>
 			<?php endforeach; ?>
 		</ul>
+
+		<div class="total_votes">
+			<?php echo lang('polls.total_votes') ?>: <?php echo $total_votes ?>
+		</div>
+
 	<?php endif; ?>
 
 <?php endif; ?>
