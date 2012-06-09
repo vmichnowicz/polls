@@ -13,7 +13,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 ### Version 1.0
 
 * Now works with PyroCMS version 2.1.1
-* Minor database update
+* MySQL database updates
+* Polls can now be "enabled" or "disabled"
 * Addon now requires PHP 5.3 or greater
 
 ### Version 0.9

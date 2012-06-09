@@ -79,6 +79,7 @@ class Module_Polls extends Module {
 			`multiple_votes` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			`comments_enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
 			`members_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
+			`active` tinyint(1) NOT NULL DEFAULT '0',
 			PRIMARY KEY (`id`)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
@@ -279,8 +280,14 @@ class Module_Polls extends Module {
 				ALTER TABLE `" . $this->db->dbprefix('poll_other_votes') . "` CHANGE `created` `created` INT(16) NOT NULL
 			");
 
+			// Make poll option titles longer
 			$this->db->query("
-				ALTER TABLE  `" . $this->db->dbprefix('poll_options') . "` CHANGE `title` `title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+				ALTER TABLE `" . $this->db->dbprefix('poll_options') . "` CHANGE `title` `title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+			");
+
+			// Add "active" status for polls
+			$this->db->query("
+				ALTER TABLE `" . $this->db->dbprefix('polls') . "` ADD `active` TINYINT(1) NOT NULL DEFAULT '0'
 			");
 		}
 
@@ -291,6 +298,12 @@ class Module_Polls extends Module {
 		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 
+	/**
+	 * Help
+	 *
+	 * @access public
+	 * @return string
+	 */
 	public function help()
 	{
 		return '<a href="https://github.com/vmichnowicz/polls">View Source on Github</a>';
