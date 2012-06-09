@@ -8,6 +8,10 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
+## Requirements
+
+This addon requires PHP 5.3 or greater and MySQL 5.1 or greater with InnoDB support.
+
 ## Change List
 
 ### Version 1.0
