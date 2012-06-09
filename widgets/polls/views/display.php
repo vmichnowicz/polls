@@ -21,8 +21,6 @@
 			
 			<br />
 			
-			<hr />
-			
 			<input type="hidden" name="session_id" value="<?php echo $this->session->userdata('session_id'); ?>" />
 			
 			<input type="submit" name="submit" value="<?php echo lang('polls.vote') ?>" />
