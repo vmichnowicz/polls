@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
 		});
 
 		// POST our sort order
-		$.post(BASE_URL + 'admin/polls/ajax_update_order/' + poll_id, obj, function(data) {
+		$.post(SITE_URL + 'admin/polls/ajax_update_order/' + poll_id, obj, function(data) {
 			// It worked!!! (probably)
 		});
 	}
@@ -77,14 +77,14 @@ jQuery(document).ready(function($) {
 
 		// Make sure user entered a title
 		if (title) {
-			$.post(BASE_URL + 'admin/polls/ajax_add_option', {
+			$.post(SITE_URL + 'admin/polls/ajax_add_option', {
 					'poll_id': $('#poll_id').val(),
 					'new_option_type': $('#new_option_type').val(),
 					'new_option_title': $('#new_option_title').val()
 				}, function(data) {
 
 					// Load in new poll options and re-run sorting function on new data
-					$(options).load(BASE_URL + 'admin/polls/update/' + poll_id + ' #section_options', function() {
+					$(options).load(SITE_URL + 'admin/polls/update/' + poll_id + ' #section_options', function() {
 						$('#options').sortable({
 							axis: 'y',
 							update: function() {
