@@ -15,10 +15,14 @@ class Module_Polls extends Module {
 	{
 		return array(
 			'name' => array(
-				'en' => 'Polls'
+				'br' => 'Enquetes',
+				'en' => 'Polls',
+				'es' => 'Encuestas'
 			),
 			'description' => array(
-				'en' => 'Create totally awesome polls.'
+				'br' => 'Cria impresionates enquetes',
+				'en' => 'Create totally awesome polls.',
+				'es' => 'Crea encuestas impresionantes'
 			),
 			'frontend' => TRUE,
 			'backend' => TRUE,
