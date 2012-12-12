@@ -14,6 +14,11 @@ This addon requires PHP 5.3 or greater and MySQL 5.1 or greater with InnoDB supp
 
 ## Change List
 
+### Version 1.0.2
+
+* Update Brazilian Portuguese language
+* Add Spanish language
+
 ### Version 1.0.1
 
 * Fix upgrade logic

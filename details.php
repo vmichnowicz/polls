@@ -2,7 +2,7 @@
 
 class Module_Polls extends Module {
 
-	public $version = '1.0.1';
+	public $version = '1.0.2';
 	const MIN_PHP_VERSION = '5.3.0';
 
 	/**
