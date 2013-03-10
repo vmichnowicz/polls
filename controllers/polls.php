@@ -24,7 +24,7 @@ class Polls extends Public_Controller {
 		$this->load->model('polls_m');
 		$this->load->model('poll_options_m');
 		$this->load->model('poll_voters_m');
-		$this->load->model('comments/comments_m');
+		$this->load->model('comments/comment_m');
 		$this->load->helper('cookie');
 		$this->lang->load('polls');
 	}

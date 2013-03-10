@@ -8,6 +8,8 @@
  */
 class Admin extends Admin_Controller {
 
+    public $data;
+
 	/**
 	 * Validation rules for creating a new poll
 	 *
