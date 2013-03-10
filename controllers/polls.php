@@ -202,6 +202,15 @@ class Polls extends Public_Controller {
 				}
 			}
 
+            // Load Comments so we can work out what to do with them
+            $this->load->library('comments/comments', array(
+                'entry_id' => $poll_id,
+                'entry_title' => $poll['title'],
+                'module' => 'blog',
+                'singular' => 'polls:poll',
+                'plural' => 'polls:polls',
+            ));
+
 			$data = array(
 				'poll' => $poll,
 				'user_vote' => $this->session->userdata('poll_' . $poll_id) ? $this->session->userdata('poll_' . $poll_id) : array(),

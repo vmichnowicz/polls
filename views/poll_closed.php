@@ -15,7 +15,13 @@
 <?php else: ?>
 	<p><?php echo lang('polls.no_options') ?></p>
 <?php endif; ?>
-	
+
 <?php if ($comments_enabled): ?>
-	<?php echo display_comments($poll['id']); ?>
+    <div id="comments">
+        <div id="existing-comments">
+            <h4><?php echo lang('comments:title') ?></h4>
+            <?php echo $this->comments->display() ?>
+        </div>
+        <?php echo $this->comments->form() ?>
+    </div>
 <?php endif; ?>
