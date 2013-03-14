@@ -41,8 +41,8 @@ class Polls extends Public_Controller {
 		$polls = $this->polls_m->retrieve_polls(TRUE);
 
 		$this->template
-			->title( lang('polls.polls') )
-			->set_breadcrumb( lang('polls.polls') )
+			->title( lang('polls:polls') )
+			->set_breadcrumb( lang('polls:polls') )
 			->build('index', array('polls' => $polls));
 	}
 
@@ -118,7 +118,7 @@ class Polls extends Public_Controller {
 				 */
 				if ($this->session->userdata('session_id') !== $this->input->post('session_id'))
 				{
-					show_error( lang('polls.cookies_required') );
+					show_error( lang('polls:cookies_required') );
 				}
 
 				// Grab all votes (or vote)
@@ -127,7 +127,7 @@ class Polls extends Public_Controller {
 				// If no options were submitted
 				if ( empty($options) )
 				{
-					show_error( lang('polls.no_options_submitted') );
+					show_error( lang('polls:no_options_submitted') );
 				}
 
 				// Grab all "other" votes
@@ -222,7 +222,7 @@ class Polls extends Public_Controller {
 			{
 				$this->template
 					->title($poll['title'])
-					->set_breadcrumb( lang('polls.polls'), 'polls')
+					->set_breadcrumb( lang('polls:polls'), 'polls')
 					->set_breadcrumb( $poll['title'] )
 					->build('poll_open', $data);
 			}
@@ -234,9 +234,9 @@ class Polls extends Public_Controller {
 				{
 					$this->template
 						->title($data['poll']['title'])
-						->set_breadcrumb( lang('polls.polls'), 'polls')
+						->set_breadcrumb( lang('polls:polls'), 'polls')
 						->set_breadcrumb( $data['poll']['title'], 'polls/' . $data['poll']['slug'] )
-						->set_breadcrumb( lang('polls.results') )
+						->set_breadcrumb( lang('polls:results') )
 						->build('poll_closed', $data);
 				}
 				else

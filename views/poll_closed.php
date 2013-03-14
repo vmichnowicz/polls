@@ -11,9 +11,9 @@
 			</li>
 		<?php endforeach; ?>
 	</ul>
-	<?php echo lang('polls.total_votes') ?>: <?php echo $poll['total_votes'] ?>
+	<?php echo lang('polls:total_votes') ?>: <?php echo $poll['total_votes'] ?>
 <?php else: ?>
-	<p><?php echo lang('polls.no_options') ?></p>
+	<p><?php echo lang('polls:no_options') ?></p>
 <?php endif; ?>
 
 <?php if ($comments_enabled): ?>

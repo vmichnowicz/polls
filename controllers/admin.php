@@ -39,17 +39,17 @@ class Admin extends Admin_Controller {
 		$this->poll_validation_rules = array(
 			array(
 				'field' => 'title',
-				'label' => 'lang:polls.title_label',
+				'label' => 'lang:polls:title_label',
 				'rules' => 'trim|max_length[64]|required'
 			),
 			array(
 				'field' => 'slug',
-				'label' => 'lang:polls.slug_label',
+				'label' => 'lang:polls:slug_label',
 				'rules' => 'trim|max_length[64]|required|alpha_dash'
 			),
 			array(
 				'field' => 'type',
-				'label' => 'lang:polls.type_label',
+				'label' => 'lang:polls:type_label',
 				'rules' => 'trim'
 			),
 			array(
@@ -59,12 +59,12 @@ class Admin extends Admin_Controller {
 			),
 			array(
 				'field' => 'open_date',
-				'label' => 'lang:polls.open_date_label ',
+				'label' => 'lang:polls:open_date_label ',
 				'rules' => 'callback_date_check'
 			),
 			array(
 				'field' => 'close_date',
-				'label' => 'lang:polls.close_date_label',
+				'label' => 'lang:polls:close_date_label',
 				'rules' => 'callback_date_check'
 			),
 			array(
@@ -74,7 +74,7 @@ class Admin extends Admin_Controller {
 			),
 			array(
 				'field' => 'members_only',
-				'label' => 'lang:polls.members_only_label',
+				'label' => 'lang:polls:members_only_label',
 				'rules' => 'trim'
 			),
 			array(
@@ -87,6 +87,40 @@ class Admin extends Admin_Controller {
 		// Put those cool buttons at the top of the admin panel
 		$this->template->set_partial('shortcuts', 'admin/partials/shortcuts');
 	}
+
+    protected function update_search_index($poll, array $options = null)
+    {
+        // Load the search index model
+        $this->load->model('search/search_index_m');
+
+        $options_array = null;
+        $options_string = null;
+
+        if ( ! empty($options) )
+        {
+            foreach($options as $option)
+            {
+                $options_array[] = preg_replace('/[^a-z0-9]+/i', ' ', $option['title']);
+            }
+        }
+
+        $options_string = $options_array ? implode(', ', $options_array) : null;
+
+        $this->search_index_m->index(
+            'polls',
+            'polls:poll',
+            'polls:polls',
+            $poll['id'],
+            'polls/' . $poll['slug'],
+            $poll['title'],
+            $poll['description'],
+            array(
+                'cp_edit_uri'   => 'admin/polls/edit/' . $poll['id'],
+                'cp_delete_uri' => 'admin/blog/delete/' . $poll['id'],
+                'keywords'      => Keywords::process($options_string),
+            )
+        );
+    }
 
 	/**
 	 * List all polls
@@ -140,12 +174,12 @@ class Admin extends Admin_Controller {
 			// If poll was added successfully
 			if ( ! empty($insert_id) )
 			{
-				$this->session->set_flashdata('success', lang('polls.create_success'));
+				$this->session->set_flashdata('success', lang('polls:create_success'));
 				redirect('admin/polls/update/' . $insert_id);
 			}
 			else
 			{
-				$this->session->set_flashdata('error', lang('polls.create_error'));
+				$this->session->set_flashdata('error', lang('polls:create_error'));
 				redirect('admin/polls/insert');
 			}
 		}
@@ -156,7 +190,7 @@ class Admin extends Admin_Controller {
 		$this->template
 			->append_metadata( $this->load->view('fragments/wysiwyg', $this->data, TRUE) )
 			->append_js('module::admin.js')
-			->title($this->module_details['name'], lang('polls.new_poll_label'))
+			->title($this->module_details['name'], lang('polls:new_poll_label'))
 			->build('admin/insert', $data);
 	}
 
@@ -172,7 +206,7 @@ class Admin extends Admin_Controller {
 		// Make sure poll exists
 		if ( empty($id) OR ! $this->polls_m->poll_exists($id) )
 		{
-			$this->session->set_flashdata('error', lang('polls.not_exist_error'));
+			$this->session->set_flashdata('error', lang('polls:not_exist_error'));
 			redirect('admin/polls');
 		}
 
@@ -212,26 +246,29 @@ class Admin extends Admin_Controller {
 				$update_options = $this->poll_options_m->update_options($id, $options);
 			}
 
+            // Update search index
+            $this->update_search_index($poll, $options);
+
 			if ($update_poll AND $update_options)
 			{
-				$this->session->set_flashdata('success', lang('polls.update_success'));
+				$this->session->set_flashdata('success', lang('polls:update_success'));
 				redirect('admin/polls/update/' . $id);
 			}
 
 			// That update did not go well
 			else
 			{
-				$this->session->set_flashdata('error', lang('polls.update_error'));
+				$this->session->set_flashdata('error', lang('polls:update_error'));
 				redirect('admin/polls/update/' . $id);
 			}
 		}
 
-		// Build that thang
+        // Build that thang
 		$this->template
 			->append_metadata( $this->load->view('fragments/wysiwyg', $this->data, TRUE) )
 			->append_js('module::admin.js')
 			->append_css('module::admin.css')
-			->title($this->module_details['name'], lang('polls.new_poll_label'))
+			->title($this->module_details['name'], lang('polls:new_poll_label'))
 			->build('admin/update', $data);
 	}
 
@@ -267,7 +304,7 @@ class Admin extends Admin_Controller {
 		// Build that thang
 		$this->template
 			->append_css('module::results.css')
-			->title($this->module_details['name'], lang('polls.results_label'))
+			->title($this->module_details['name'], lang('polls:results_label'))
 			->build('admin/results', array('poll' => $poll, 'options' => $options, 'total_votes' => $total_votes));
 	}
 
@@ -285,7 +322,7 @@ class Admin extends Admin_Controller {
 		
 		if ( empty($ids) OR ! is_array($ids) )
 		{
-			$this->session->set_flashdata('error', lang('polls.id_error'));
+			$this->session->set_flashdata('error', lang('polls:id_error'));
 			redirect('admin/polls');
 		}
 
@@ -299,7 +336,7 @@ class Admin extends Admin_Controller {
 				if ( ! $this->polls_m->delete($id) )
 				{
 					$success = FALSE;
-					$this->session->set_flashdata('error', lang('polls.delete_error'));
+					$this->session->set_flashdata('error', lang('polls:delete_error'));
 				}
 			}
 		}
@@ -307,7 +344,7 @@ class Admin extends Admin_Controller {
 		// If no errors in deleting the polls
 		if ($success === TRUE)
 		{
-			$this->session->set_flashdata('success', lang('polls.delete_success'));
+			$this->session->set_flashdata('success', lang('polls:delete_success'));
 		}
 
 		redirect('admin/polls');
@@ -335,7 +372,7 @@ class Admin extends Admin_Controller {
 		}
 
 		// If we got this far we do not have a valid date
-		$this->form_validation->set_message('date_check', lang('polls.invalid_date') );
+		$this->form_validation->set_message('date_check', lang('polls:invalid_date') );
 		return FALSE;
 	}
 

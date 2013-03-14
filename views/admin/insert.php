@@ -1,5 +1,5 @@
 <section class="title">
-	<h4><?php echo lang('polls.new_poll_label'); ?></h4>
+	<h4><?php echo lang('polls:new_poll_label'); ?></h4>
 </section>
 
 <section class="item form_inputs">
@@ -7,13 +7,13 @@
 		<fieldset>
 			<ul>
 				<li>
-					<label for="title"><?php echo lang('polls.title_label'); ?></label>
+					<label for="title"><?php echo lang('polls:title_label'); ?></label>
 					<input type="text" id="title" name="title" maxlength="255" value="<?php echo set_value('title'); ?>" />
 					<span class="required-icon tooltip">Required</span>
 				</li>
 
 				<li class="even">
-					<label for="slug"><?php echo lang('polls.slug_label'); ?></label>
+					<label for="slug"><?php echo lang('polls:slug_label'); ?></label>
 					<input type="text" name="slug" id="slug" maxlength="255" value="<?php echo set_value('slug'); ?>" />
 					<span class="required-icon tooltip">Required</span>
 				</li>

@@ -25,7 +25,7 @@ class Module_Polls extends Module {
 			'menu' => 'content',
 			'shortcuts' => array(
 				array(
-			 	   'name' => 'polls.new_poll_label',
+			 	   'name' => 'polls:new_poll_label',
 				   'uri' => 'admin/polls/insert',
 				),
 			),
