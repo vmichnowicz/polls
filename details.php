@@ -2,7 +2,8 @@
 
 class Module_Polls extends Module {
 
-	public $version = '1.0';
+	public $version = '1.1';
+
 	const MIN_PHP_VERSION = '5.3.0';
 
 	/**
@@ -15,10 +16,14 @@ class Module_Polls extends Module {
 	{
 		return array(
 			'name' => array(
-				'en' => 'Polls'
+				'br' => 'Enquetes',
+				'en' => 'Polls',
+				'es' => 'Encuestas'
 			),
 			'description' => array(
-				'en' => 'Create totally awesome polls.'
+				'br' => 'Cria impresionates enquetes',
+				'en' => 'Create totally awesome polls.',
+				'es' => 'Crea encuestas impresionantes'
 			),
 			'frontend' => TRUE,
 			'backend' => TRUE,
@@ -43,7 +48,7 @@ class Module_Polls extends Module {
 		// If current version of PHP is not up snuff
 		if ( version_compare(PHP_VERSION, self::MIN_PHP_VERSION) < 0 )
 		{
-			show_error('This addon requires PHP version ' . self::MIN_PHP_VERSION . ' or higher.');
+			show_error('This add-on requires PHP version ' . self::MIN_PHP_VERSION . ' or higher.');
 			return FALSE;
 		}
 	}
@@ -175,7 +180,7 @@ class Module_Polls extends Module {
 		$this->dbforge->drop_table('poll_other_votes');
 		$this->dbforge->drop_table('poll_options');
 		$this->dbforge->drop_table('polls');
-		
+
 		return TRUE;
 	}
 
@@ -273,12 +278,43 @@ class Module_Polls extends Module {
 			$this->db->query("RENAME TABLE  `poll_voters` TO  `" . $this->db->dbprefix('poll_voters') . "`");
 		}
 
-		if ($old_version < '1.0')
+		if ($old_version < '1.0.1')
 		{
-			// Versions less than 1.0 had a TIMESTAMP type for poll_other_options (makes more sense IMO, but everything else in PyroCMS is using UNIX timestamps)
+			/**
+			 * Versions less than 1.0 had a TIMESTAMP type for
+			 * poll_other_options (makes more sense IMO, but everything else in
+			 * PyroCMS is using UNIX timestamps)
+			 */
+
+			// Create temp table
+			$this->db->query("
+				CREATE TEMPORARY TABLE poll_other_votes_timestamps (
+					`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+					`parent_id` smallint(11) unsigned NOT NULL,
+					`text` tinytext NOT NULL,
+					`created` int(16) NOT NULL,
+					PRIMARY KEY (`id`),
+					KEY `parent_id` (`parent_id`)
+				) ENGINE=InnoDB DEFAULT CHARSET utf8
+			");
+
+			// Insert data into temp table
+			$this->db->query("
+				INSERT INTO poll_other_votes_timestamps
+				SELECT id, parent_id, text, UNIX_TIMESTAMP(created)
+				FROM " . $this->db->dbprefix('poll_other_votes')
+			);
+
+			// Empty other votes table
+			$this->db->query("TRUNCATE TABLE " . $this->db->dbprefix('poll_other_votes'));
+
+			// Alter other votes table table
 			$this->db->query("
 				ALTER TABLE `" . $this->db->dbprefix('poll_other_votes') . "` CHANGE `created` `created` INT(16) NOT NULL
 			");
+
+			// Insert data from temp table into newly altered other votes table
+			$this->db->query("INSERT INTO " . $this->db->dbprefix('poll_other_votes') . " SELECT * FROM poll_other_votes_timestamps");
 
 			// Make poll option titles longer
 			$this->db->query("
@@ -294,8 +330,8 @@ class Module_Polls extends Module {
 		// End transaction
 		$this->db->trans_complete();
 
-		// If transaction was successful retrun TRUE, else FALSE
-		return $this->db->trans_status() ? TRUE : FALSE;
+		// If transaction was successful return TRUE, else FALSE
+		return $this->db->trans_status();
 	}
 
 	/**
