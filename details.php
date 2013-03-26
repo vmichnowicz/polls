@@ -2,7 +2,7 @@
 
 class Module_Polls extends Module {
 
-	public $version = '1.0';
+	public $version = '1.1';
 	const MIN_PHP_VERSION = '5.3.0';
 
 	/**
@@ -43,7 +43,7 @@ class Module_Polls extends Module {
 		// If current version of PHP is not up snuff
 		if ( version_compare(PHP_VERSION, self::MIN_PHP_VERSION) < 0 )
 		{
-			show_error('This addon requires PHP version ' . self::MIN_PHP_VERSION . ' or higher.');
+			show_error('This add-on requires PHP version ' . self::MIN_PHP_VERSION . ' or higher.');
 			return FALSE;
 		}
 	}
