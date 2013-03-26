@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
 	 *
 	 * @source http://stackoverflow.com/questions/1053902/how-to-convert-a-title-to-a-url-slug-in-jquery/1054592#1054592
 	 */
-	$('#title').keyup(function(){
+	$('#title').on('keyup change', function() {
 		var text = $(this).val();
 		text = text.toLowerCase();
 		text = text.replace(/[^a-zA-Z0-9]+/g,'-');
@@ -36,7 +36,12 @@ jQuery(document).ready(function($) {
 	// Datepicker
 	$("#open_date, #close_date").datepicker({ dateFormat: 'yy-mm-dd' });
 
-	// Function that gets run when the sort order changes
+    /**
+     * Function that gets run when the sort order changes
+     *
+     * @url https://github.com/vmichnowicz/polls/issues/7
+     * @todo Seems like this sort thing got messed up in a newer vesion of PyroCMS, this needs to be revisited
+     */
 	function sort() {
 		var poll_id = $('#poll_id').val();
 		var options = $('input[name^="options"]');
@@ -69,7 +74,7 @@ jQuery(document).ready(function($) {
 	});
 
 	// Add a poll option
-	function add_option() {
+	var add_option = function() {
 		var options = $('#section_options');
 
         var poll_id = $('#poll_id').val();
@@ -89,11 +94,13 @@ jQuery(document).ready(function($) {
             var defined = $('<option value="defined" value="Defined">').text('Other');
             var other = $('<option value="defined" value="Other">').text('Defined');
             var titleInput = $('<input type="text" name="options[' + random + '][title]"></select>').val( title.val() );
+            var removeOption = $('<input type="button" class="remove_option" value="Remove Option" />');
 
             selectInput.append(defined, other).val( type.val() );
-            li.append(selectInput, titleInput);
+            li.append(selectInput, document.createTextNode(' '), titleInput, document.createTextNode(' '), removeOption);
 
             $('#options').append(li);
+            title.val('');
 		}
 		else {
 			alert('Please enter a poll option title.');
@@ -118,7 +125,7 @@ jQuery(document).ready(function($) {
      * Show confirmation message, remove option text, then hide list element. When we process the form after form
      * submission we will notice the empty option text and remove that option from the database.
      */
-    $('input[type="button"].remove_option').click(function(e) {
+    $('input[type="button"].remove_option').live('click', function(e) {
         e.preventDefault();
         if ( confirm('Are you sure you want to remove this poll option?') ) {
             var li = $(this).closest('li');
