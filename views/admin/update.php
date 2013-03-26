@@ -50,7 +50,7 @@
                                             <li>
                                                 <?php echo form_dropdown('options[' . $option['id'] . '][type]', array('defined'=>lang('polls:defined'), 'other'=>lang('polls:other')), $option['type'], 'id=""options'); ?>
                                                 <input type="text" name="options[<?php echo $option['id']; ?>][title]" value="<?php echo $option['title']; ?>" />
-                                                <span class="move-handle"></span>
+                                                <input type="button" class="remove_option" value="<?php echo lang('polls:remove_option_label'); ?>" />
                                             </li>
                                         <?php endif; ?>
                                     <?php endforeach; ?>

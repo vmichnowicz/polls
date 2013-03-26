@@ -71,29 +71,29 @@ jQuery(document).ready(function($) {
 	// Add a poll option
 	function add_option() {
 		var options = $('#section_options');
-		var poll_id = $('#poll_id').val();
-		var type = $('#new_option_type').val();
-		var title = $('#new_option_title').val();
+
+        var poll_id = $('#poll_id').val();
+		var type = $('#new_option_type');
+		var title = $('#new_option_title');
 
 		// Make sure user entered a title
-		if (title) {
-			$.post(BASE_URL + 'admin/polls/ajax_add_option', {
-					'poll_id': $('#poll_id').val(),
-					'new_option_type': $('#new_option_type').val(),
-					'new_option_title': $('#new_option_title').val()
-				}, function(data) {
+		if ( $.trim( title.val() ) !== '' ) {
+            /**
+             * Create random option key. Make sure it contains a letter.
+             * @url http://stackoverflow.com/questions/1349404/generate-a-string-of-5-random-characters-in-javascript
+             */
+            var random = 'l' + Math.random().toString(36).substr(7);
 
-					// Load in new poll options and re-run sorting function on new data
-					$(options).load(BASE_URL + 'admin/polls/update/' + poll_id + ' #section_options', function() {
-						$('#options').sortable({
-							axis: 'y',
-							update: function() {
-								sort();
-							}
-						});
-					});
+            var li = $('<li />');
+            var selectInput = $('<select name="options[' + random + '][type]"></select>');
+            var defined = $('<option value="defined" value="Defined">').text('Other');
+            var other = $('<option value="defined" value="Other">').text('Defined');
+            var titleInput = $('<input type="text" name="options[' + random + '][title]"></select>').val( title.val() );
 
-			});
+            selectInput.append(defined, other).val( type.val() );
+            li.append(selectInput, titleInput);
+
+            $('#options').append(li);
 		}
 		else {
 			alert('Please enter a poll option title.');
@@ -112,4 +112,17 @@ jQuery(document).ready(function($) {
 		}
 	});
 
+    /**
+     * Remove a poll option
+     *
+     * Show confirmation message, remove option text, then hide list element. When we process the form after form
+     * submission we will notice the empty option text and remove that option from the database.
+     */
+    $('input[type="button"].remove_option').click(function(e) {
+        e.preventDefault();
+        if ( confirm('Are you sure you want to remove this poll option?') ) {
+            var li = $(this).closest('li');
+            li.find('input[type="text"]').val('').end().slideUp('fast');
+        }
+    });
 });
