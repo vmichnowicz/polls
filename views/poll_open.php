@@ -27,17 +27,23 @@
 			
 			<input type="hidden" name="session_id" value="<?php echo $this->session->userdata('session_id'); ?>" />
 			
-			<input type="submit" name="submit" value="<?php echo lang('polls.vote') ?>" />
+			<input type="submit" name="submit" value="<?php echo lang('polls:vote') ?>" />
 		</fieldset>
 	</form>
 
-	<a href="<?php echo site_url() . '/polls/results/' . $poll['slug'] ?>"><?php echo lang('polls.results') ?></a><br />
-	<?php echo lang('polls.total_votes') ?>: <?php echo $poll['total_votes'] ?>
+	<a href="<?php echo site_url() . '/polls/results/' . $poll['slug'] ?>"><?php echo lang('polls:results') ?></a><br />
+	<?php echo lang('polls:total_votes') ?>: <?php echo $poll['total_votes'] ?>
 
 <?php else: ?>
-   <p><?php echo lang('polls.no_options') ?></p>
+   <p><?php echo lang('polls:no_options') ?></p>
 <?php endif; ?>
 
 <?php if ($comments_enabled): ?>
-	<?php echo display_comments($poll['id']); ?>
+    <div id="comments">
+        <div id="existing-comments">
+            <h4><?php echo lang('comments:title') ?></h4>
+            <?php echo $this->comments->display() ?>
+        </div>
+        <?php echo $this->comments->form() ?>
+    </div>
 <?php endif; ?>

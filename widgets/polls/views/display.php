@@ -25,7 +25,7 @@
 			
 			<input type="hidden" name="session_id" value="<?php echo $this->session->userdata('session_id'); ?>" />
 			
-			<input type="submit" name="submit" value="<?php echo lang('polls.vote') ?>" />
+			<input type="submit" name="submit" value="<?php echo lang('polls:vote') ?>" />
 		</fieldset>
 	</form>
 
@@ -37,7 +37,7 @@
 			<?php foreach($poll_options as $option): ?>
 				<li>
 					<span><?php echo $option['title']; ?></span>
-					<em>&ndash; <?php echo $option['votes']; ?> <?php echo lang('polls.votes') ?></em>
+					<em>&ndash; <?php echo $option['votes']; ?> <?php echo lang('polls:votes') ?></em>
 					<div style="width: <?php echo $option['votes'] > 0 ? round( ($option['votes'] / $total_votes * 100), 1) : '0'; ?>%;">
 						<?php echo $option['votes'] > 0 ? round( ($option['votes'] / $total_votes * 100), 1) : '0'; ?>%
 					</div>
@@ -46,11 +46,11 @@
 		</ul>
 
 		<div class="total_votes">
-			<?php echo lang('polls.total_votes') ?>: <?php echo $total_votes ?>
+			<?php echo lang('polls:total_votes') ?>: <?php echo $total_votes ?>
 		</div>
 
 	<?php endif; ?>
 
 <?php endif; ?>
 
-<a href="<?php echo site_url('polls/' . $slug); ?>"><?php echo lang('polls.view_label') ?></a>
+<a href="<?php echo site_url('polls/' . $slug); ?>"><?php echo lang('polls:view_label') ?></a>
