@@ -2,7 +2,7 @@
 
 class Module_Polls extends Module {
 
-	public $version = '1.1';
+	public $version = '1.1.1';
 
 	const MIN_PHP_VERSION = '5.3.0';
 
@@ -18,12 +18,14 @@ class Module_Polls extends Module {
 			'name' => array(
 				'br' => 'Enquetes',
 				'en' => 'Polls',
-				'es' => 'Encuestas'
+				'es' => 'Encuestas',
+				'lt' => 'Apklausos',
 			),
 			'description' => array(
 				'br' => 'Cria impresionates enquetes',
 				'en' => 'Create totally awesome polls.',
-				'es' => 'Crea encuestas impresionantes'
+				'es' => 'Crea encuestas impresionantes',
+				'lt' => 'Kurkite apklausas.',
 			),
 			'frontend' => TRUE,
 			'backend' => TRUE,
@@ -38,7 +40,7 @@ class Module_Polls extends Module {
 	}
 
 	/**
-	 * Check the current version of PHP and thow an error if it's not good enough
+	 * Check the current version of PHP and throw an error if it's not good enough
 	 *
 	 * @access private
 	 * @return boolean
@@ -46,7 +48,7 @@ class Module_Polls extends Module {
 	private function check_php_version()
 	{
 		// If current version of PHP is not up snuff
-		if ( version_compare(PHP_VERSION, self::MIN_PHP_VERSION) < 0 )
+		if (version_compare(PHP_VERSION, self::MIN_PHP_VERSION) < 0)
 		{
 			show_error('This add-on requires PHP version ' . self::MIN_PHP_VERSION . ' or higher.');
 			return FALSE;
@@ -161,7 +163,7 @@ class Module_Polls extends Module {
 		// End transaction
 		$this->db->trans_complete();
 
-		// If transaction was successful retrun TRUE, else FALSE
+		// If transaction was successful return TRUE, else FALSE
 		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 
