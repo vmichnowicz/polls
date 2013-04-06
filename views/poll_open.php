@@ -7,7 +7,7 @@
 </p>
 
 <?php if ( is_array($poll['options']) AND count($poll['options']) > 0): ?>
-	<form method="post" action="<?php echo current_url(); ?>">
+	<?php echo form_open(current_url()); ?>
 		<fieldset>
 			<ul class="poll_options">
 				<?php foreach($poll['options'] as $option): ?>
@@ -29,7 +29,7 @@
 			
 			<input type="submit" name="submit" value="<?php echo lang('polls:vote') ?>" />
 		</fieldset>
-	</form>
+	<?php echo form_close(); ?>
 
 	<a href="<?php echo site_url() . '/polls/results/' . $poll['slug'] ?>"><?php echo lang('polls:results') ?></a><br />
 	<?php echo lang('polls:total_votes') ?>: <?php echo $poll['total_votes'] ?>
