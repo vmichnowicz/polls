@@ -3,7 +3,7 @@
 <!-- If poll is open and user has not already voted in this poll -->
 <?php if ($is_open AND ! $already_voted): ?>
 	
-	<form method="post" action="<?php echo site_url('polls/' . $slug); ?>">
+	<?php echo form_open(site_url('polls/' . $slug)); ?>
 		<fieldset>
 			<ul class="poll_options">
 				<?php if ( is_array($poll_options) AND count($poll_options) > 0 ): ?>
@@ -27,7 +27,7 @@
 			
 			<input type="submit" name="submit" value="<?php echo lang('polls:vote') ?>" />
 		</fieldset>
-	</form>
+	<?php echo form_close(); ?>
 
 <!-- If poll is closed or user has already voted in this poll -->
 <?php else: ?>
