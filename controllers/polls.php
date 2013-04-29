@@ -100,9 +100,6 @@ class Polls extends Public_Controller {
 		// If this poll exists
 		if ( ! empty($poll_id) AND ! empty($poll) )
 		{
-			// Get the data for this particular [active] poll
-			$poll = $this->polls_m->retrieve_poll($poll_id, TRUE);
-
 			// Multiple option polls use checkbox inputs, single option polls use radio inputs
 			$poll['input_type'] = $poll['type'] == 'single' ? 'radio' : 'checkbox';
 
