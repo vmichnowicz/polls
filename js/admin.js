@@ -1,16 +1,6 @@
 jQuery(document).ready(function($) {
 
-	/**
-	 * Automate URL slug
-	 *
-	 * @source http://stackoverflow.com/questions/1053902/how-to-convert-a-title-to-a-url-slug-in-jquery/1054592#1054592
-	 */
-	$('#title').keyup(function(){
-		var text = $(this).val();
-		text = text.toLowerCase();
-		text = text.replace(/[^a-zA-Z0-9]+/g,'-');
-		$("#slug").val(text);
-	});
+	pyro.generate_slug('input#title', 'input#slug');
 	
 	// Add new option input focus set to "false" by default
 	var option_focus = false;
