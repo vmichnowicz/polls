@@ -116,7 +116,7 @@ class Admin extends Admin_Controller {
             $poll['description'],
             array(
                 'cp_edit_uri'   => 'admin/polls/edit/' . $poll['id'],
-                'cp_delete_uri' => 'admin/blog/delete/' . $poll['id'],
+                'cp_delete_uri' => 'admin/polls/delete/' . $poll['id'],
                 'keywords'      => Keywords::process($options_string),
             )
         );
